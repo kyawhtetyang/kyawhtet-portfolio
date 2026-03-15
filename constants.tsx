@@ -1,5 +1,6 @@
 import { AppInfo, Category } from './types';
 import imgAimlPortfolio18 from './docs/18.png';
+import imgCloudLanguage13 from './docs/13_CloudLanguage.png';
 import imgGroup19 from './docs/19.png';
 import imgGroup20 from './docs/20.png';
 import imgMusic21 from './docs/21.png';
@@ -11,8 +12,8 @@ export const APPS: AppInfo[] = [
     name: 'CloudLanguage (MVP)',
     subtitle: 'Mobile-first language learning MVP for Burmese learners (in progress).',
     category: Category.Projects,
-    icon: imgGroup20,
-    banner: imgGroup20,
+    icon: imgCloudLanguage13,
+    banner: imgCloudLanguage13,
     overview: 'Language-learning app focused on Burmese learners with structured lessons, progress tracking, and review flow.',
     stack: 'Frontend: React + TypeScript\nBackend: FastAPI\nData: Lesson JSON + Postgres (optional)',
     outcome: 'Building an end-to-end lesson loop with progress persistence and review queue.',
