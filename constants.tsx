@@ -128,7 +128,8 @@ export const APPS: AppInfo[] = [
     developer: 'Kyaw Htet',
     featured: true,
     website: 'https://movie-recommender-frontend-phi.vercel.app/',
-    repo: 'https://github.com/kyawhtetyang/MovieRecommender_Hybrid'
+    repo: 'https://github.com/kyawhtetyang/MovieRecommender_Hybrid',
+    demo: 'Use demo login: username demo, password demo1234.'
   },
   {
     id: '10',

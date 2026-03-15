@@ -20,4 +20,5 @@ export interface AppInfo {
   website?: string;
   repo?: string;
   downloadUrl?: string;
+  demo?: string;
 }

@@ -88,8 +88,13 @@ export const AppDetailModal: React.FC<AppDetailModalProps> = ({ app, onClose }) 
             <section>
               <h3 className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-2">Outcome</h3>
               <p className="text-gray-600 leading-relaxed text-sm">{app.outcome}</p>
-              
             </section>
+            {app.demo && (
+              <section>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-2">Demo Access</h3>
+                <p className="text-gray-600 leading-relaxed text-sm">{app.demo}</p>
+              </section>
+            )}
           </div>
         </div>
       </div>
