@@ -1,6 +1,7 @@
 export enum Category {
   Discover = 'Discover',
   Projects = 'Projects',
+  AppStore = 'App Store',
   Chat = 'Chat'
 }
 

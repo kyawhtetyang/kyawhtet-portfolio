@@ -3,7 +3,7 @@ import React, { useState, useMemo } from 'react';
 import { Category, AppInfo } from './types';
 import { PROJECT_FILTERS, ProjectFilter, getProjectFilterType } from './projectType';
 import { APPS } from './constants';
-import { AppCard } from './components/AppCard';
+import { AppStoreListItem } from './components/AppStoreListItem';
 import { AppDetailModal } from './components/AppDetailModal';
 import profilePhoto from './docs/01_AIML_Portfolio.png';
 
@@ -31,6 +31,12 @@ const SidebarItem: React.FC<{
 );
 
 const App: React.FC = () => {
+  const privateStoreApps = useMemo(() => {
+    const privateStoreLocalModules = import.meta.glob<{ PRIVATE_STORE_APPS?: AppInfo[] }>('./privateStore.local.ts', { eager: true });
+    const localPrivateStoreApps = Object.values(privateStoreLocalModules).flatMap((mod) => mod.PRIVATE_STORE_APPS ?? []);
+    return localPrivateStoreApps.length > 0 ? localPrivateStoreApps : [];
+  }, []);
+  const privateStoreEnabled = (import.meta.env.VITE_ENABLE_PRIVATE_STORE as string | undefined)?.trim().toLowerCase() === 'true';
   const [selectedCategory, setSelectedCategory] = useState<Category>(Category.Discover);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<ProjectFilter>('Featured');
@@ -47,6 +53,8 @@ const App: React.FC = () => {
   });
   const isDiscoverPage = selectedCategory === Category.Discover;
   const isChatPage = selectedCategory === Category.Chat;
+  const isProjectsPage = selectedCategory === Category.Projects;
+  const isAppStorePage = selectedCategory === Category.AppStore;
   const profile = {
     email: 'kyaw.htet.yang@gmail.com',
     linkedin: 'https://linkedin.com/in/kyawhtetyang',
@@ -101,9 +109,10 @@ const App: React.FC = () => {
   ];
 
   const filteredApps = useMemo(() => {
-    let list = APPS;
+    const sourceApps = isAppStorePage ? privateStoreApps : APPS;
+    let list = sourceApps;
 
-    if (selectedCategory === Category.Projects && selectedProjectFilter !== 'All') {
+    if (isProjectsPage && selectedProjectFilter !== 'All') {
       if (selectedProjectFilter === 'Featured') {
         list = list.filter(app => app.featured);
       } else {
@@ -119,7 +128,7 @@ const App: React.FC = () => {
     }
 
     return list;
-  }, [selectedCategory, searchQuery, selectedProjectFilter]);
+  }, [isAppStorePage, isProjectsPage, privateStoreApps, searchQuery, selectedProjectFilter]);
 
   const handleAppClick = (app: AppInfo) => {
     setSelectedApp(app);
@@ -210,6 +219,14 @@ const App: React.FC = () => {
             onClick={setSelectedCategory}
             icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7h8v13H3V7zm10-3h8v16h-8V4z" /></svg>}
           />
+          {privateStoreEnabled && (
+            <SidebarItem
+              category={Category.AppStore}
+              active={selectedCategory === Category.AppStore}
+              onClick={setSelectedCategory}
+              icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 12h14M5 16h14" /></svg>}
+            />
+          )}
           <button
             onClick={() => setSelectedCategory(Category.Chat)}
             className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
@@ -422,39 +439,59 @@ const App: React.FC = () => {
             <section className="pt-16 md:pt-20 mb-10">
               {searchQuery && (
                 <div className="mb-4">
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-0">
-                    {`Search Results for "${searchQuery}"`}
+                  <p className="text-sm font-medium text-[#6e6e73] mb-0">
+                    {`${filteredApps.length} result${filteredApps.length === 1 ? '' : 's'} for "${searchQuery}"`}
                   </p>
                 </div>
               )}
 
-              <div className="flex flex-wrap gap-2 mb-6">
-                {PROJECT_FILTERS.map((filter) => (
-                  <button
-                    key={filter}
-                    type="button"
-                    onClick={() => setSelectedProjectFilter(filter)}
-                    className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
-                      selectedProjectFilter === filter
-                        ? 'bg-[#fa233b] text-white'
-                        : 'bg-white border border-black/10 text-[#1d1d1f] hover:bg-gray-50'
-                    }`}
-                  >
-                    {filter}
-                  </button>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-x-4 sm:gap-x-5 gap-y-6">
-                {filteredApps.map(app => (
-                  <AppCard key={app.id} app={app} onClick={handleAppClick} />
-                ))}
-                {filteredApps.length === 0 && (
-                  <div className="col-span-full py-20 text-center">
-                    <p className="text-gray-400 font-medium">No apps found matching your criteria.</p>
+              {isProjectsPage && (
+                <div className="mb-6">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-[#6e6e73] mb-2">Category</p>
+                  <div className="flex flex-wrap gap-2">
+                  {PROJECT_FILTERS.map((filter) => (
+                    <button
+                      key={filter}
+                      type="button"
+                      onClick={() => setSelectedProjectFilter(filter)}
+                      className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                        selectedProjectFilter === filter
+                          ? 'bg-[#fa233b] text-white'
+                          : 'bg-white border border-black/10 text-[#1d1d1f] hover:bg-gray-50'
+                      }`}
+                    >
+                      {filter}
+                    </button>
+                  ))}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
+
+              {isProjectsPage || isAppStorePage ? (
+                <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8">
+                  {filteredApps.map(app => (
+                    <AppStoreListItem key={app.id} app={app} onOpen={handleAppClick} />
+                  ))}
+                  {filteredApps.length === 0 && (
+                    <div className="py-20 text-center lg:col-span-2">
+                      <p className="text-gray-400 font-medium">
+                        {isProjectsPage ? 'No projects found matching your criteria.' : 'No apps found matching your criteria.'}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-x-4 sm:gap-x-5 gap-y-6">
+                  {filteredApps.map(app => (
+                    <AppCard key={app.id} app={app} onClick={handleAppClick} />
+                  ))}
+                  {filteredApps.length === 0 && (
+                    <div className="col-span-full py-20 text-center">
+                      <p className="text-gray-400 font-medium">No apps found matching your criteria.</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </section>
           </>
         )}
@@ -468,6 +505,11 @@ const App: React.FC = () => {
         <button onClick={() => setSelectedCategory(Category.Projects)} className={`p-2 rounded-full ${selectedCategory === Category.Projects ? 'text-[#fa233b]' : 'text-gray-400'}`}>
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7h8v13H3V7zm10-3h8v16h-8V4z" /></svg>
         </button>
+        {privateStoreEnabled && (
+          <button onClick={() => setSelectedCategory(Category.AppStore)} className={`p-2 rounded-full ${selectedCategory === Category.AppStore ? 'text-[#fa233b]' : 'text-gray-400'}`}>
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 12h14M5 16h14" /></svg>
+          </button>
+        )}
         <button onClick={() => setSelectedCategory(Category.Chat)} className={`p-2 rounded-full ${selectedCategory === Category.Chat ? 'text-[#fa233b]' : 'text-gray-400'}`}>
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h8M8 14h5m8-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
         </button>

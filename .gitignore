@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+privateStore.local.ts
+__install/
 
 # Editor directories and files
 .vscode/*

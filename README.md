@@ -44,6 +44,18 @@ VITE_FORMSPREE_ENDPOINT=https://formspree.io/f/your_form_id
 
 3. Restart dev server after editing env vars.
 
+## Private App Store (Optional)
+
+Keep personal/internal utility apps hidden by default.
+
+Add in `.env.local` only when you want to see private apps:
+
+```bash
+VITE_ENABLE_PRIVATE_STORE=true
+```
+
+If unset (or `false`), the `App Store` toggle is not shown in Projects.
+
 ## Deployment
 
 Recommended: deploy with Vercel from `main`.

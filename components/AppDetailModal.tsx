@@ -12,7 +12,7 @@ export const AppDetailModal: React.FC<AppDetailModalProps> = ({ app, onClose }) 
 
   const projectType = getProjectFilterType(app);
   const projectUrl = app.website;
-  const githubUrl = app.repo || 'https://github.com/kyawhtetyang';
+  const githubUrl = app.repo;
   const downloadUrl = app.downloadUrl;
 
   return (
@@ -42,14 +42,16 @@ export const AppDetailModal: React.FC<AppDetailModalProps> = ({ app, onClose }) 
                 Download
               </a>
             )}
-            <a
-              href={githubUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="px-4 sm:px-5 py-1.5 bg-gray-100 text-[#1d1d1f] font-bold rounded-full text-sm hover:bg-gray-200 transition-colors"
-            >
-              GitHub
-            </a>
+            {githubUrl && (
+              <a
+                href={githubUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 sm:px-5 py-1.5 bg-gray-100 text-[#1d1d1f] font-bold rounded-full text-sm hover:bg-gray-200 transition-colors"
+              >
+                GitHub
+              </a>
+            )}
             {projectUrl && (
               <a
                 href={projectUrl}
