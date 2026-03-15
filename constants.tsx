@@ -127,6 +127,7 @@ export const APPS: AppInfo[] = [
     outcome: 'Improved recommendation relevance by blending multiple ranking signals.',
     developer: 'Kyaw Htet',
     featured: true,
+    website: 'https://movie-recommender-frontend-phi.vercel.app/',
     repo: 'https://github.com/kyawhtetyang/MovieRecommender_Hybrid'
   },
   {

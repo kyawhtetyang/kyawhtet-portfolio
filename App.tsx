@@ -18,15 +18,15 @@ const SidebarItem: React.FC<{
     onClick={() => onClick(category)}
     className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
       active 
-        ? 'bg-black/5 text-[#1d1d1f]' 
+        ? 'bg-black/5' 
         : 'text-gray-500 hover:bg-black/5 hover:text-[#1d1d1f]'
     }`}
   >
-    <span className={`${active ? 'text-[#1d1d1f]' : 'text-gray-400 group-hover:text-[#1d1d1f]'}`}>
+    <span className={`${active ? 'text-[#fa233b]' : 'text-gray-400'}`}>
       {icon}
     
     </span>
-    <span className="text-sm font-semibold">{category}</span>
+    <span className={`text-sm font-semibold ${active ? 'text-[#fa233b]' : 'text-inherit'}`}>{category}</span>
   </button>
 );
 
@@ -256,16 +256,16 @@ const App: React.FC = () => {
             onClick={() => setSelectedCategory(Category.Chat)}
             className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
               selectedCategory === Category.Chat
-                ? 'bg-black/5 text-[#1d1d1f]'
+                ? 'bg-black/5'
                 : 'text-gray-500 hover:bg-black/5 hover:text-[#1d1d1f]'
             }`}
           >
             <span className="flex items-center gap-3 min-w-0">
-              <span className={`${selectedCategory === Category.Chat ? 'text-[#1d1d1f]' : 'text-gray-400 group-hover:text-[#1d1d1f]'}`}><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <span className={`${selectedCategory === Category.Chat ? 'text-[#fa233b]' : 'text-gray-400'}`}><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h8M8 14h5m8-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </span>
-              <span className="text-sm font-semibold truncate">{Category.Chat}</span>
+              <span className={`text-sm font-semibold truncate ${selectedCategory === Category.Chat ? 'text-[#fa233b]' : 'text-inherit'}`}>{Category.Chat}</span>
             </span>
             <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
               selectedCategory === Category.Chat
