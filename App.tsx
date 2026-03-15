@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Category, AppInfo } from './types';
 import { PROJECT_FILTERS, ProjectFilter, getProjectFilterType } from './projectType';
 import { APPS } from './constants';
@@ -37,6 +37,12 @@ const App: React.FC = () => {
     return localPrivateStoreApps.length > 0 ? localPrivateStoreApps : [];
   }, []);
   const privateStoreEnabled = (import.meta.env.VITE_ENABLE_PRIVATE_STORE as string | undefined)?.trim().toLowerCase() === 'true';
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window === 'undefined') return 'dark';
+    const stored = window.localStorage.getItem('theme');
+    if (stored === 'light' || stored === 'dark') return stored;
+    return 'dark';
+  });
   const [selectedCategory, setSelectedCategory] = useState<Category>(Category.Discover);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<ProjectFilter>('Featured');
@@ -51,6 +57,7 @@ const App: React.FC = () => {
     type: 'idle',
     message: ''
   });
+  const isDark = theme === 'dark';
   const isDiscoverPage = selectedCategory === Category.Discover;
   const isChatPage = selectedCategory === Category.Chat;
   const isProjectsPage = selectedCategory === Category.Projects;
@@ -132,6 +139,24 @@ const App: React.FC = () => {
 
   const handleAppClick = (app: AppInfo) => {
     setSelectedApp(app);
+  };
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    try {
+      window.localStorage.setItem('theme', theme);
+    } catch {
+      // Ignore storage errors (private mode or blocked storage).
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((current) => (current === 'dark' ? 'light' : 'dark'));
   };
 
   const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -268,20 +293,39 @@ const App: React.FC = () => {
             </div>
           </div>
           
-          {!isDiscoverPage && !isChatPage && (
-            <div className="relative">
-              <input 
-                type="text"
-                placeholder="Search Apps..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full md:w-64 lg:w-80 bg-black/5 border-none rounded-xl py-2 px-10 transition-all outline-none text-sm"
-              />
-              <svg className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-          )}
+          <div className="flex items-center gap-3">
+            {!isDiscoverPage && !isChatPage && (
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search Apps..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full md:w-64 lg:w-80 bg-black/5 border-none rounded-xl py-2 px-10 transition-all outline-none text-sm"
+                />
+                <svg className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+            )}
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+              className="p-2 rounded-full bg-black/5 hover:bg-black/10 transition-colors"
+            >
+              {isDark ? (
+                <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v2m0 14v2m9-9h-2M5 12H3m14.95-6.95-1.41 1.41M7.46 16.54l-1.41 1.41m0-11.31 1.41 1.41m10.08 10.08 1.41 1.41M12 7a5 5 0 100 10 5 5 0 000-10z" />
+                </svg>
+              ) : (
+                <svg className="w-4 h-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" />
+                </svg>
+              )}
+            </button>
+          </div>
         </header>
 
         {isDiscoverPage ? (
