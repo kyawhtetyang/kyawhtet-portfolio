@@ -97,7 +97,6 @@ export const APPS: AppInfo[] = [
     stack: 'ML/Engine: SBERT + Transformers + Pandas\nBackend: Flask (Python)\nPackaging: Docker',
     outcome: 'Enabled better article matching and semantic ranking for content analysis tasks.',
     developer: 'Kyaw Htet',
-    featured: true,
     repo: 'https://github.com/kyawhtetyang/ArticleAnalyzer_SBERT'
   },
   {
