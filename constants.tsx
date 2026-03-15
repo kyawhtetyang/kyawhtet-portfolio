@@ -8,17 +8,18 @@ import imgFileOrganizer22 from './docs/22.png';
 export const APPS: AppInfo[] = [
   {
     id: '1',
-    name: 'AI/ML Portfolio',
-    subtitle: 'Portfolio web app showcasing AI and software projects.',
+    name: 'CloudLanguage (MVP)',
+    subtitle: 'Mobile-first language learning MVP for Burmese learners (in progress).',
     category: Category.Projects,
-    icon: imgAimlPortfolio18,
-    banner: imgAimlPortfolio18,
-    overview: 'Personal portfolio experience that presents projects, skills, and collaboration channels clearly.',
-    stack: 'Frontend: React + TypeScript\nStyling: Tailwind\nBuild: Vite',
-    outcome: 'Created a focused portfolio structure optimized for recruiters and clients.',
+    icon: imgGroup20,
+    banner: imgGroup20,
+    overview: 'Language-learning app focused on Burmese learners with structured lessons, progress tracking, and review flow.',
+    stack: 'Frontend: React + TypeScript\nBackend: FastAPI\nData: Lesson JSON + Postgres (optional)',
+    outcome: 'Building an end-to-end lesson loop with progress persistence and review queue.',
     developer: 'Kyaw Htet',
-    website: 'https://kyawhtet.com',
-    repo: 'https://github.com/kyawhtetyang/AI-ML-Portfolio'
+    featured: true,
+    website: 'https://cloudlanguage.vercel.app/',
+    repo: 'https://github.com/kyawhtetyang/Cloud_Language'
   },
   {
     id: '2',
@@ -75,15 +76,15 @@ export const APPS: AppInfo[] = [
   {
     id: '6',
     name: 'House Price Regression',
-    subtitle: 'Machine learning model for housing price prediction.',
+    subtitle: 'Regression pipeline for housing price prediction.',
     category: Category.Projects,
     icon: imgGroup19,
     banner: imgGroup19,
-    overview: 'Regression workflow for estimating property price from key housing features.',
-    stack: 'ML/Engine: Scikit-learn Regression + EDA\nBackend: Python Notebook/Pipeline',
-    outcome: 'Built a reproducible ML pipeline for real-estate price modeling.',
+    overview: 'End-to-end regression workflow for estimating house prices from structured features.',
+    stack: 'ML/Engine: Scikit-learn Regression + EDA\nPipeline: Feature engineering + evaluation',
+    outcome: 'Built a reproducible ML baseline with clear evaluation metrics.',
     developer: 'Kyaw Htet',
-    repo: 'https://github.com/kyawhtetyang'
+    repo: 'https://github.com/kyawhtetyang/HousePrice_Regression'
   },
   {
     id: '7',
@@ -152,7 +153,6 @@ export const APPS: AppInfo[] = [
     stack: 'Frontend: React + TypeScript\nBackend: FastAPI\nDatabase/Storage: Postgres + Cloudflare R2',
     outcome: 'Demonstrated high-fidelity UI implementation and design-system consistency.',
     developer: 'Kyaw Htet',
-    featured: true,
     website: 'https://music.kyawhtet.com',
     repo: 'https://github.com/kyawhtetyang/Music_App'
   },
