@@ -19,7 +19,7 @@ const SidebarItem: React.FC<{
     className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
       active 
         ? 'bg-black/5' 
-        : 'text-gray-500 hover:bg-black/5 hover:text-[#1d1d1f]'
+        : 'text-gray-500 hover:bg-black/5'
     }`}
   >
     <span className={`${active ? 'text-[#fa233b]' : 'text-gray-400'}`}>
@@ -257,7 +257,7 @@ const App: React.FC = () => {
             className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
               selectedCategory === Category.Chat
                 ? 'bg-black/5'
-                : 'text-gray-500 hover:bg-black/5 hover:text-[#1d1d1f]'
+                : 'text-gray-500 hover:bg-black/5'
             }`}
           >
             <span className="flex items-center gap-3 min-w-0">
