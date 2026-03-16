@@ -431,7 +431,7 @@ const App: React.FC = () => {
                   <article key={project.title} className="bg-white border border-black/10 rounded-2xl p-5">
                     <h4 className="text-base font-bold text-gray-900">{project.title}</h4>
                     <p className="mt-2 text-sm text-gray-600 leading-relaxed">{project.summary}</p>
-                    <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-gray-500">{project.stack}</p>
+                    <p className="mt-4 text-xs font-semibold tracking-wide text-gray-500">{project.stack}</p>
                   </article>
                 ))}
               </div>
