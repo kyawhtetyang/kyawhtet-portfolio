@@ -512,14 +512,8 @@ const App: React.FC = () => {
           </div>
         ) : isBlogPage ? (
           <div className="pt-16 md:pt-20 space-y-8 pb-20">
-            <section className="bg-white border border-black/10 rounded-2xl p-6 md:p-7">
-              <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Blog</p>
-              <h3 className="text-base font-bold text-gray-900">Latest posts</h3>
-              <p className="mt-3 text-sm text-gray-600 max-w-3xl">
-                Thoughts, product notes, and research reflections.
-              </p>
-            </section>
             <section>
+              <h3 className="text-base font-bold text-gray-900 mb-4">Blog</h3>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {blogDrafts.map((note) => (
                   <article
