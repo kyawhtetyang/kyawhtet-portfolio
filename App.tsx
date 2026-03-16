@@ -513,19 +513,10 @@ const App: React.FC = () => {
         ) : isBlogPage ? (
           <div className="pt-16 md:pt-20 space-y-8 pb-20">
             <section className="bg-white border border-black/10 rounded-2xl p-6 md:p-7">
-              <div className="flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Blog</p>
-                  <h3 className="text-base font-bold text-gray-900">Posts in progress</h3>
-                </div>
-                {blogBeta && (
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
-                    Beta
-                  </span>
-                )}
-              </div>
+              <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Blog</p>
+              <h3 className="text-base font-bold text-gray-900">Latest posts</h3>
               <p className="mt-3 text-sm text-gray-600 max-w-3xl">
-                This section is evolving and will be polished before public release.
+                Thoughts, product notes, and research reflections.
               </p>
             </section>
             <section>
@@ -706,9 +697,7 @@ const App: React.FC = () => {
               <div className="text-left">
                 <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">{selectedBlogDraft.updated}</p>
                 <h2 className="text-xl font-bold text-gray-900">{selectedBlogDraft.title}</h2>
-                {blogBeta && (
-                  <p className="text-sm text-gray-500">Beta</p>
-                )}
+                <p className="text-sm text-gray-500">Blog</p>
               </div>
               <button
                 onClick={() => setSelectedBlogDraft(null)}
@@ -723,9 +712,6 @@ const App: React.FC = () => {
               <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
                 {selectedBlogDraft.content || selectedBlogDraft.summary}
               </p>
-              <div className="mt-6 rounded-2xl bg-gray-50 border border-black/10 p-4 text-xs text-gray-500 leading-relaxed">
-                Beta preview. Publish when ready.
-              </div>
             </div>
           </div>
         </div>
