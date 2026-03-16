@@ -48,6 +48,12 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<ProjectFilter>('Featured');
   const [selectedApp, setSelectedApp] = useState<AppInfo | null>(null);
+  const [selectedBlogDraft, setSelectedBlogDraft] = useState<{
+    title: string;
+    status: string;
+    summary: string;
+    updated: string;
+  } | null>(null);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [contactName, setContactName] = useState('');
   const [contactEmail, setContactEmail] = useState('');
@@ -542,6 +548,13 @@ const App: React.FC = () => {
                     </div>
                     <h4 className="text-base font-bold text-gray-900">{note.title}</h4>
                     <p className="mt-2 text-sm text-gray-600 leading-relaxed">{note.summary}</p>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedBlogDraft(note)}
+                      className="mt-4 inline-flex items-center rounded-full bg-white border border-black/10 text-[#1d1d1f] text-xs font-semibold px-3 py-1.5 hover:bg-gray-50 transition-colors"
+                    >
+                      Read draft
+                    </button>
                   </article>
                 ))}
               </div>
@@ -688,6 +701,40 @@ const App: React.FC = () => {
                   </p>
                 )}
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedBlogDraft && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 animate-in fade-in duration-300">
+          <div
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+            onClick={() => setSelectedBlogDraft(null)}
+          />
+          <div className="relative w-full max-w-2xl bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh] animate-in zoom-in-95 duration-300">
+            <div className="flex items-start justify-between px-6 py-5 md:px-8 md:py-6 bg-white/80 backdrop-blur-md sticky top-0 z-10 border-b border-gray-100">
+              <div className="text-left">
+                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">{selectedBlogDraft.updated}</p>
+                <h2 className="text-xl font-bold text-gray-900">{selectedBlogDraft.title}</h2>
+                <p className="text-sm text-gray-500">{selectedBlogDraft.status}</p>
+              </div>
+              <button
+                onClick={() => setSelectedBlogDraft(null)}
+                className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+              >
+                <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 text-left">
+              <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                {selectedBlogDraft.summary}
+              </p>
+              <div className="mt-6 rounded-2xl bg-gray-50 border border-black/10 p-4 text-xs text-gray-500 leading-relaxed">
+                This is a private draft summary. The full text still lives in your local draft files.
+              </div>
             </div>
           </div>
         </div>
