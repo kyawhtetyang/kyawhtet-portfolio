@@ -123,13 +123,13 @@ export const APPS: AppInfo[] = [
     icon: imgGroup19,
     banner: imgGroup19,
     overview: 'Recommendation engine combining collaborative and content-based strategies for personalized results.',
-    stack: 'Frontend: Flask Templates\nBackend: Flask (Python)\nML/Engine: Hybrid Recommender (Scikit-learn)\nDatabase: SQLite',
+    stack: 'Frontend: React (trimmed, wiring in progress)\nBackend: Flask (Jinja) + FastAPI\nML/Engine: Hybrid Recommender (Scikit-learn)\nDatabase: SQLite',
     outcome: 'Improved recommendation relevance by blending multiple ranking signals.',
     developer: 'Kyaw Htet',
     featured: true,
-    website: 'https://movie-recommender-frontend-phi.vercel.app/',
+    website: 'https://movie-recommender-hybrid.onrender.com',
     repo: 'https://github.com/kyawhtetyang/MovieRecommender_Hybrid',
-    demo: 'Use demo login: username demo, password demo1234.'
+    demo: 'Backend demo (legacy UI): https://movie-recommender-hybrid.onrender.com — Use demo login: username demo, password demo1234.'
   },
   {
     id: '10',
