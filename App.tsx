@@ -119,22 +119,34 @@ const App: React.FC = () => {
 
   const blogDrafts = [
     {
-      title: 'CloudLanguage: Lesson Loop Notes',
+      title: 'Sora update #1',
       status: 'Draft',
-      summary: 'MVP lesson flow, review queue logic, and data schema decisions.',
+      summary: 'Notes on upcoming policy changes, rightsholder controls, and monetization direction.',
       updated: '2026-03-16'
     },
     {
-      title: 'Movie Recommender: API Migration',
-      status: 'Polishing',
-      summary: 'FastAPI endpoint design, auth token format, and demo UX notes.',
+      title: 'Sora 2',
+      status: 'Draft',
+      summary: 'Launch framing for a new model + product, creation-first UX, and safety concerns.',
       updated: '2026-03-16'
     },
     {
-      title: 'Flagship Portfolio Positioning',
+      title: 'Abundant Intelligence',
       status: 'Idea',
-      summary: 'Narrative framing for AI/ML + product builder profile.',
-      updated: '2026-03-15'
+      summary: 'Why compute is the bottleneck, and what massive infrastructure buildout implies.',
+      updated: '2026-03-16'
+    },
+    {
+      title: 'Jakub and Szymon',
+      status: 'Idea',
+      summary: 'Short recognition note on research + engineering leadership behind major breakthroughs.',
+      updated: '2026-03-16'
+    },
+    {
+      title: 'The Gentle Singularity',
+      status: 'Polishing',
+      summary: 'A long-form reflection on rapid AI progress, risks, and societal adaptation.',
+      updated: '2026-03-16'
     }
   ];
 
