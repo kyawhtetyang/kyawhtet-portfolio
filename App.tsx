@@ -93,8 +93,8 @@ const App: React.FC = () => {
     'LLM Applications',
     'Python + FastAPI',
     'React + TypeScript',
-    'Prompt Engineering',
-    'Model Deployment'
+    'Product MVP Building',
+    'MLOps & Deployment'
   ];
 
   const featuredWork = [
