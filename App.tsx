@@ -109,9 +109,9 @@ const App: React.FC = () => {
       stack: 'Python, FastAPI, SQLite, Hybrid Recommender'
     },
     {
-      title: 'File Organizer Pro',
-      summary: 'Automated local file-processing pipeline with step previews, deduplication modes, presets, undo history, and desktop-ready workflow integration.',
-      stack: 'FastAPI, React, Vite, SQLite/Postgres, Tauri'
+      title: 'CloudLanguage (MVP)',
+      summary: 'Mobile-first language learning MVP for Burmese learners with lesson loop, progress tracking, and review flow in build.',
+      stack: 'React, TypeScript, FastAPI, Lesson JSON'
     }
   ];
 
