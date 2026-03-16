@@ -133,28 +133,6 @@ const App: React.FC = () => {
       stack: 'React, TypeScript, FastAPI, Lesson JSON'
     }
   ];
-  const flagshipProject = {
-    title: 'Movie Recommender (Hybrid)',
-    summary: 'Hybrid recommendation MVP combining user, item, content, and latent signals with a production-ready FastAPI backend.',
-    problem: 'Cold-start and noisy preferences slow down reliable recommendations.',
-    approach: 'Blend collaborative and content signals, score transparency, and a clean API layer.',
-    outcome: 'Demo-ready recommender with explainable signals and a front-end ready for iteration.',
-    stack: 'Python, FastAPI, SQLite, Hybrid Recommender'
-  };
-  const focusAreas = [
-    {
-      title: 'Recommendation Systems',
-      description: 'Hybrid ranking pipelines, explainable scoring, and MVP-ready deployment.'
-    },
-    {
-      title: 'Language Learning MVPs',
-      description: 'Lesson loops, spaced review flows, and progress tracking for real users.'
-    },
-    {
-      title: 'AI/ML Product Delivery',
-      description: 'From data prep to API, deployment, and a clean UX handoff.'
-    }
-  ];
 
   const blogDrafts = BLOG_DRAFTS;
 
@@ -386,16 +364,16 @@ const App: React.FC = () => {
         </header>
 
         {isDiscoverPage ? (
-          <div className="pt-16 md:pt-20 space-y-10 pb-20">
-            <section className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div className="lg:col-span-8 bg-white border border-black/10 rounded-2xl p-6 md:p-8">
-                <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">AI/ML Product Builder</p>
-                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 leading-tight">
-                  I build AI/ML MVPs that ship fast and stay usable.
+          <div className="pt-16 md:pt-20 space-y-8 pb-20">
+            <section>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              <div className="lg:col-span-8 bg-white border border-black/10 rounded-2xl p-6 md:p-7">
+                <h3 className="text-base font-bold text-gray-900 leading-tight">
+                  Kyaw Htet | AI/ML Engineer & Product Builder
                 </h3>
-                <p className="mt-4 text-sm text-gray-600 max-w-2xl">
-                  I combine business framing with hands-on engineering in Python, automation, and machine learning.
-                  The work below is focused on shipping real products with clean UX and reliable backends.
+                <p className="mt-4 text-sm text-gray-600 max-w-3xl">
+                  I combine MBA-level business understanding with hands-on engineering experience in Python, automation, NLP, and machine learning.
+                  This portfolio highlights practical projects, technical strengths, and ways to collaborate.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-3">
                   <a href={profile.linkedin} target="_blank" rel="noreferrer" className="inline-flex items-center rounded-xl bg-white border border-black/10 text-[#1d1d1f] text-sm font-semibold px-4 py-2 hover:bg-gray-50 transition-colors">
@@ -415,29 +393,21 @@ const App: React.FC = () => {
                     Contact
                   </button>
                 </div>
-                <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="rounded-xl bg-black/5 px-4 py-3 text-sm font-semibold text-[#1d1d1f]">
-                    AI/ML MVP Delivery
-                  </div>
-                  <div className="rounded-xl bg-black/5 px-4 py-3 text-sm font-semibold text-[#1d1d1f]">
-                    FastAPI + React Stack
-                  </div>
-                  <div className="rounded-xl bg-black/5 px-4 py-3 text-sm font-semibold text-[#1d1d1f]">
-                    Product-First Execution
-                  </div>
-                </div>
               </div>
 
               <div className="lg:col-span-4 bg-white border border-black/10 rounded-2xl p-6 md:p-7">
-                <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-4">Availability</p>
                 <ul className="space-y-3 text-sm">
                   <li className="flex items-center justify-between border-b border-black/10 pb-2">
                     <span className="text-[#6e6e73]">Role</span>
                     <span className="font-semibold text-[#1d1d1f]">AI/ML Junior Developer</span>
                   </li>
                   <li className="flex items-center justify-between border-b border-black/10 pb-2">
-                    <span className="text-[#6e6e73]">Location</span>
+                    <span className="text-[#6e6e73]">Address</span>
                     <span className="font-semibold text-[#1d1d1f]">{profile.location}</span>
+                  </li>
+                  <li className="flex items-center justify-between border-b border-black/10 pb-2">
+                    <span className="text-[#6e6e73]">Phone</span>
+                    <span className="font-semibold text-[#1d1d1f]">{profile.phone}</span>
                   </li>
                   <li className="flex items-center justify-between border-b border-black/10 pb-2">
                     <span className="text-[#6e6e73]">Status</span>
@@ -448,59 +418,11 @@ const App: React.FC = () => {
                     <span className="font-semibold text-[#1d1d1f] truncate ml-4">{profile.email}</span>
                   </li>
                 </ul>
-                <button
-                  type="button"
-                  onClick={() => setIsContactModalOpen(true)}
-                  className="mt-5 w-full inline-flex items-center justify-center rounded-xl bg-[#fa233b] text-white text-sm font-semibold px-4 py-2.5 hover:bg-[#d91e33] transition-colors"
-                >
-                  Start a Project
-                </button>
+              </div>
               </div>
             </section>
 
-            <section className="bg-white border border-black/10 rounded-2xl p-6 md:p-8">
-              <div className="flex flex-wrap items-start justify-between gap-4">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-2">Flagship MVP</p>
-                  <h4 className="text-xl font-bold text-gray-900">{flagshipProject.title}</h4>
-                  <p className="mt-2 text-sm text-gray-600 max-w-2xl">{flagshipProject.summary}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setSelectedCategory(Category.Projects)}
-                  className="inline-flex items-center rounded-xl bg-white border border-black/10 text-[#1d1d1f] text-sm font-semibold px-4 py-2 hover:bg-gray-50 transition-colors"
-                >
-                  View in Projects
-                </button>
-              </div>
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="rounded-xl bg-black/5 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">Problem</p>
-                  <p className="text-sm text-gray-700">{flagshipProject.problem}</p>
-                </div>
-                <div className="rounded-xl bg-black/5 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">Approach</p>
-                  <p className="text-sm text-gray-700">{flagshipProject.approach}</p>
-                </div>
-                <div className="rounded-xl bg-black/5 p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">Outcome</p>
-                  <p className="text-sm text-gray-700">{flagshipProject.outcome}</p>
-                </div>
-              </div>
-              <p className="mt-4 text-xs font-semibold uppercase tracking-wide text-gray-500">{flagshipProject.stack}</p>
-            </section>
-
-            <section>
-              <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Focus Areas</p>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {focusAreas.map((area) => (
-                  <article key={area.title} className="bg-white border border-black/10 rounded-2xl p-5">
-                    <h4 className="text-base font-bold text-gray-900">{area.title}</h4>
-                    <p className="mt-2 text-sm text-gray-600 leading-relaxed">{area.description}</p>
-                  </article>
-                ))}
-              </div>
-            </section>
+            <div className="border-t border-black/10"></div>
 
             <section>
               <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Featured Work</p>
@@ -515,6 +437,8 @@ const App: React.FC = () => {
               </div>
             </section>
 
+            <div className="border-t border-black/10"></div>
+
             <section>
               <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Skills</p>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -526,11 +450,13 @@ const App: React.FC = () => {
               </div>
             </section>
 
+            <div className="border-t border-black/10"></div>
+
             <section>
               <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Contact</p>
-              <h3 className="text-base font-bold text-gray-900">Ready to build together?</h3>
+              <h3 className="text-base font-bold text-gray-900">Want to work together?</h3>
               <p className="mt-3 text-sm text-gray-600">
-                Share your goals and timeline. I will respond with a fast plan and next steps.
+                Send your project brief directly from here.
               </p>
               <div className="mt-5 flex flex-wrap gap-3">
                 <button
@@ -619,39 +545,25 @@ const App: React.FC = () => {
               )}
 
               {isProjectsPage && (
-                <>
-                  <div className="mb-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-                    <div className="lg:col-span-2 bg-white border border-black/10 rounded-2xl p-5">
-                      <h3 className="text-base font-bold text-gray-900">Portfolio Index</h3>
-                      <p className="mt-2 text-sm text-gray-600">
-                        Each project includes scope, stack, and current status. Use filters to focus on AI/ML, web apps, or experiments.
-                      </p>
-                    </div>
-                    <div className="bg-white border border-black/10 rounded-2xl p-5">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">Tip</p>
-                      <p className="text-sm text-gray-600">Start with Featured to see the flagship work first.</p>
-                    </div>
+                <div className="mb-6">
+                  <p className="text-[11px] font-bold uppercase tracking-wider text-[#6e6e73] mb-2">Category</p>
+                  <div className="flex flex-wrap gap-2">
+                  {PROJECT_FILTERS.map((filter) => (
+                    <button
+                      key={filter}
+                      type="button"
+                      onClick={() => setSelectedProjectFilter(filter)}
+                      className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                        selectedProjectFilter === filter
+                          ? 'bg-[#fa233b] text-white'
+                          : 'bg-white border border-black/10 text-[#1d1d1f] hover:bg-gray-50'
+                      }`}
+                    >
+                      {filter}
+                    </button>
+                  ))}
                   </div>
-                  <div className="mb-6">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-[#6e6e73] mb-2">Category</p>
-                    <div className="flex flex-wrap gap-2">
-                    {PROJECT_FILTERS.map((filter) => (
-                      <button
-                        key={filter}
-                        type="button"
-                        onClick={() => setSelectedProjectFilter(filter)}
-                        className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
-                          selectedProjectFilter === filter
-                            ? 'bg-[#fa233b] text-white'
-                            : 'bg-white border border-black/10 text-[#1d1d1f] hover:bg-gray-50'
-                        }`}
-                      >
-                        {filter}
-                      </button>
-                    ))}
-                    </div>
-                  </div>
-                </>
+                </div>
               )}
 
               {isProjectsPage || isAppStorePage ? (
