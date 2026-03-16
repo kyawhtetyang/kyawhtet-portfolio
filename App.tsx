@@ -14,20 +14,31 @@ const SidebarItem: React.FC<{
   active: boolean; 
   onClick: (cat: Category) => void;
   icon: React.ReactNode;
-}> = ({ category, active, onClick, icon }) => (
+  badge?: string;
+}> = ({ category, active, onClick, icon, badge }) => (
   <button 
     onClick={() => onClick(category)}
-    className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
+    className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
       active 
         ? 'bg-black/5' 
         : 'text-gray-500 hover:bg-black/5'
     }`}
   >
-    <span className={`${active ? 'text-[#fa233b]' : 'text-gray-400'}`}>
-      {icon}
-    
+    <span className="flex items-center gap-3 min-w-0">
+      <span className={`${active ? 'text-[#fa233b]' : 'text-gray-400'}`}>
+        {icon}
+      </span>
+      <span className={`text-sm font-semibold ${active ? 'text-[#fa233b]' : 'text-inherit'}`}>{category}</span>
     </span>
-    <span className={`text-sm font-semibold ${active ? 'text-[#fa233b]' : 'text-inherit'}`}>{category}</span>
+    {badge && (
+      <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+        active
+          ? 'bg-[#1d1d1f] text-white'
+          : 'bg-black/10 text-[#1d1d1f]'
+      }`}>
+        {badge}
+      </span>
+    )}
   </button>
 );
 
@@ -39,6 +50,9 @@ const App: React.FC = () => {
   }, []);
   const privateStoreEnabled = (import.meta.env.VITE_ENABLE_PRIVATE_STORE as string | undefined)?.trim().toLowerCase() === 'true';
   const blogEnabled = (import.meta.env.VITE_ENABLE_BLOG as string | undefined)?.trim().toLowerCase() === 'true';
+  const appStoreBeta = (import.meta.env.VITE_APPSTORE_BETA as string | undefined)?.trim().toLowerCase() === 'true';
+  const blogBeta = (import.meta.env.VITE_BLOG_BETA as string | undefined)?.trim().toLowerCase() === 'true';
+  const chatBeta = (import.meta.env.VITE_CHAT_BETA as string | undefined)?.trim().toLowerCase() === 'true';
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window === 'undefined') return 'dark';
     const stored = window.localStorage.getItem('theme');
@@ -255,6 +269,7 @@ const App: React.FC = () => {
               category={Category.Blog}
               active={selectedCategory === Category.Blog}
               onClick={setSelectedCategory}
+              badge={blogBeta ? 'Beta' : undefined}
               icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2zm2 4h6m-6 4h6m-6 4h4" /></svg>}
             />
           )}
@@ -263,6 +278,7 @@ const App: React.FC = () => {
               category={Category.AppStore}
               active={selectedCategory === Category.AppStore}
               onClick={setSelectedCategory}
+              badge={appStoreBeta ? 'Beta' : undefined}
               icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 12h14M5 16h14" /></svg>}
             />
           )}
@@ -281,13 +297,15 @@ const App: React.FC = () => {
               </span>
               <span className={`text-sm font-semibold truncate ${selectedCategory === Category.Chat ? 'text-[#fa233b]' : 'text-inherit'}`}>{Category.Chat}</span>
             </span>
-            <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-              selectedCategory === Category.Chat
-                ? 'bg-[#1d1d1f] text-white'
-                : 'bg-black/10 text-[#1d1d1f]'
-            }`}>
-              Beta
-            </span>
+            {chatBeta && (
+              <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                selectedCategory === Category.Chat
+                  ? 'bg-[#1d1d1f] text-white'
+                  : 'bg-black/10 text-[#1d1d1f]'
+              }`}>
+                Beta
+              </span>
+            )}
           </button>
         </nav>
 
@@ -299,11 +317,11 @@ const App: React.FC = () => {
           <div>
             <div className="flex items-center gap-3">
               <h2 className="text-lg md:text-xl font-semibold text-[#1d1d1f] tracking-tight">{selectedCategory}</h2>
-              {isChatPage && (
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
-                  Beta
-                </span>
-              )}
+            {isChatPage && chatBeta && (
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
+                Beta
+              </span>
+            )}
             </div>
           </div>
           
@@ -495,10 +513,19 @@ const App: React.FC = () => {
         ) : isBlogPage ? (
           <div className="pt-16 md:pt-20 space-y-8 pb-20">
             <section className="bg-white border border-black/10 rounded-2xl p-6 md:p-7">
-              <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Blog (Private)</p>
-              <h3 className="text-base font-bold text-gray-900">Draft Posts</h3>
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Blog</p>
+                  <h3 className="text-base font-bold text-gray-900">Posts in progress</h3>
+                </div>
+                {blogBeta && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
+                    Beta
+                  </span>
+                )}
+              </div>
               <p className="mt-3 text-sm text-gray-600 max-w-3xl">
-                Internal writing notes only. Not public yet.
+                This section is evolving and will be polished before public release.
               </p>
             </section>
             <section>
@@ -679,7 +706,9 @@ const App: React.FC = () => {
               <div className="text-left">
                 <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">{selectedBlogDraft.updated}</p>
                 <h2 className="text-xl font-bold text-gray-900">{selectedBlogDraft.title}</h2>
-                <p className="text-sm text-gray-500">{selectedBlogDraft.status}</p>
+                {blogBeta && (
+                  <p className="text-sm text-gray-500">Beta</p>
+                )}
               </div>
               <button
                 onClick={() => setSelectedBlogDraft(null)}
@@ -695,7 +724,7 @@ const App: React.FC = () => {
                 {selectedBlogDraft.content || selectedBlogDraft.summary}
               </p>
               <div className="mt-6 rounded-2xl bg-gray-50 border border-black/10 p-4 text-xs text-gray-500 leading-relaxed">
-                This is a private draft view. Publish when ready.
+                Beta preview. Publish when ready.
               </div>
             </div>
           </div>
