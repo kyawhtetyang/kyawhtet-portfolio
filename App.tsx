@@ -37,7 +37,7 @@ const App: React.FC = () => {
     return localPrivateStoreApps.length > 0 ? localPrivateStoreApps : [];
   }, []);
   const privateStoreEnabled = (import.meta.env.VITE_ENABLE_PRIVATE_STORE as string | undefined)?.trim().toLowerCase() === 'true';
-  const draftsEnabled = (import.meta.env.VITE_ENABLE_DRAFTS as string | undefined)?.trim().toLowerCase() === 'true';
+  const blogEnabled = (import.meta.env.VITE_ENABLE_BLOG as string | undefined)?.trim().toLowerCase() === 'true';
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window === 'undefined') return 'dark';
     const stored = window.localStorage.getItem('theme');
@@ -62,6 +62,7 @@ const App: React.FC = () => {
   const isDiscoverPage = selectedCategory === Category.Discover;
   const isChatPage = selectedCategory === Category.Chat;
   const isProjectsPage = selectedCategory === Category.Projects;
+  const isBlogPage = selectedCategory === Category.Blog;
   const isAppStorePage = selectedCategory === Category.AppStore;
   const profile = {
     email: 'kyaw.htet.yang@gmail.com',
@@ -116,7 +117,7 @@ const App: React.FC = () => {
     }
   ];
 
-  const draftNotes = [
+  const blogDrafts = [
     {
       title: 'CloudLanguage: Lesson Loop Notes',
       status: 'Draft',
@@ -266,6 +267,14 @@ const App: React.FC = () => {
             onClick={setSelectedCategory}
             icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7h8v13H3V7zm10-3h8v16h-8V4z" /></svg>}
           />
+          {blogEnabled && (
+            <SidebarItem
+              category={Category.Blog}
+              active={selectedCategory === Category.Blog}
+              onClick={setSelectedCategory}
+              icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2zm2 4h6m-6 4h6m-6 4h4" /></svg>}
+            />
+          )}
           {privateStoreEnabled && (
             <SidebarItem
               category={Category.AppStore}
@@ -316,7 +325,7 @@ const App: React.FC = () => {
           </div>
           
           <div className="flex items-center gap-3">
-            {!isDiscoverPage && !isChatPage && (
+            {!isDiscoverPage && !isChatPage && !isBlogPage && (
               <div className="relative">
                 <input
                   type="text"
@@ -439,33 +448,6 @@ const App: React.FC = () => {
 
             <div className="border-t border-black/10"></div>
 
-            {draftsEnabled && (
-              <>
-                <section>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Drafts (Private)</p>
-                  <p className="text-sm text-gray-600 max-w-3xl mb-6">
-                    Internal writing notes only. Not public yet.
-                  </p>
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {draftNotes.map((note) => (
-                      <article key={note.title} className="bg-white border border-black/10 rounded-2xl p-5">
-                        <div className="flex items-center justify-between gap-3 mb-3">
-                          <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">{note.updated}</p>
-                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
-                            {note.status}
-                          </span>
-                        </div>
-                        <h4 className="text-base font-bold text-gray-900">{note.title}</h4>
-                        <p className="mt-2 text-sm text-gray-600 leading-relaxed">{note.summary}</p>
-                      </article>
-                    ))}
-                  </div>
-                </section>
-
-                <div className="border-t border-black/10"></div>
-              </>
-            )}
-
             <section>
               <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Contact</p>
               <h3 className="text-base font-bold text-gray-900">Want to work together?</h3>
@@ -526,6 +508,32 @@ const App: React.FC = () => {
                 </p>
               </div>
             </div>
+          </div>
+        ) : isBlogPage ? (
+          <div className="pt-16 md:pt-20 space-y-8 pb-20">
+            <section className="bg-white border border-black/10 rounded-2xl p-6 md:p-7">
+              <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Blog (Private)</p>
+              <h3 className="text-base font-bold text-gray-900">Draft Posts</h3>
+              <p className="mt-3 text-sm text-gray-600 max-w-3xl">
+                Internal writing notes only. Not public yet.
+              </p>
+            </section>
+            <section>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {blogDrafts.map((note) => (
+                  <article key={note.title} className="bg-white border border-black/10 rounded-2xl p-5">
+                    <div className="flex items-center justify-between gap-3 mb-3">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">{note.updated}</p>
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
+                        {note.status}
+                      </span>
+                    </div>
+                    <h4 className="text-base font-bold text-gray-900">{note.title}</h4>
+                    <p className="mt-2 text-sm text-gray-600 leading-relaxed">{note.summary}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
           </div>
         ) : (
           <>
@@ -598,6 +606,11 @@ const App: React.FC = () => {
         <button onClick={() => setSelectedCategory(Category.Projects)} className={`p-2 rounded-full ${selectedCategory === Category.Projects ? 'text-[#fa233b]' : 'text-gray-400'}`}>
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7h8v13H3V7zm10-3h8v16h-8V4z" /></svg>
         </button>
+        {blogEnabled && (
+          <button onClick={() => setSelectedCategory(Category.Blog)} className={`p-2 rounded-full ${selectedCategory === Category.Blog ? 'text-[#fa233b]' : 'text-gray-400'}`}>
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2zm2 4h6m-6 4h6m-6 4h4" /></svg>
+          </button>
+        )}
         {privateStoreEnabled && (
           <button onClick={() => setSelectedCategory(Category.AppStore)} className={`p-2 rounded-full ${selectedCategory === Category.AppStore ? 'text-[#fa233b]' : 'text-gray-400'}`}>
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 12h14M5 16h14" /></svg>
