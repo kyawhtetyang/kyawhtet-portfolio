@@ -118,19 +118,19 @@ const App: React.FC = () => {
 
   const featuredWork = [
     {
+      title: 'CloudLanguage (MVP)',
+      summary: 'Mobile-first language learning MVP for Burmese learners with lesson loop, progress tracking, and review flow in build.',
+      stack: 'React · TypeScript · FastAPI · Lesson JSON'
+    },
+    {
       title: 'Fake News Detector (BiLSTM)',
       summary: 'End-to-end fake news detection pipeline with preprocessing, BiLSTM training, Flask prediction interface, and Docker deployment support.',
       stack: 'Python · TensorFlow · BiLSTM · Flask'
     },
     {
-      title: 'Movie Recommender (Hybrid)',
-      summary: 'Hybrid recommendation MVP combining user/item/content/latent signals, now migrating from Flask templates to a FastAPI-powered API + frontend.',
-      stack: 'Python · FastAPI · SQLite · Hybrid Recommender'
-    },
-    {
-      title: 'CloudLanguage (MVP)',
-      summary: 'Mobile-first language learning MVP for Burmese learners with lesson loop, progress tracking, and review flow in build.',
-      stack: 'React · TypeScript · FastAPI · Lesson JSON'
+      title: 'Music App (UI)',
+      summary: 'Apple-inspired music interface with refined navigation, interactions, and visual hierarchy for a premium listening experience.',
+      stack: 'React · TypeScript · UI Engineering'
     }
   ];
 
