@@ -513,7 +513,6 @@ const App: React.FC = () => {
         ) : isBlogPage ? (
           <div className="pt-16 md:pt-20 space-y-8 pb-20">
             <section>
-              <h3 className="text-base font-bold text-gray-900 mb-4">Blog</h3>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {blogDrafts.map((note) => (
                   <article
