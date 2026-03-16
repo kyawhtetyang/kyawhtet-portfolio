@@ -105,8 +105,8 @@ const App: React.FC = () => {
     },
     {
       title: 'Movie Recommender (Hybrid)',
-      summary: 'Hybrid recommendation MVP combining user/item/content/latent methods with Flask web pages, dynamic recommendations, and SQLite-backed ratings.',
-      stack: 'Python, Flask, SQLite, Hybrid Recommender'
+      summary: 'Hybrid recommendation MVP combining user/item/content/latent signals, now migrating from Flask templates to a FastAPI-powered API + frontend.',
+      stack: 'Python, FastAPI, SQLite, Hybrid Recommender'
     },
     {
       title: 'File Organizer Pro',
