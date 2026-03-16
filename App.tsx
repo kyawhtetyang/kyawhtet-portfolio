@@ -539,7 +539,11 @@ const App: React.FC = () => {
             <section>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {blogDrafts.map((note) => (
-                  <article key={note.title} className="bg-white border border-black/10 rounded-2xl p-5">
+                  <article
+                    key={note.title}
+                    className="bg-white border border-black/10 rounded-2xl p-5 cursor-pointer hover:bg-gray-50 transition-colors"
+                    onClick={() => setSelectedBlogDraft(note)}
+                  >
                     <div className="flex items-center justify-between gap-3 mb-3">
                       <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">{note.updated}</p>
                       <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
@@ -548,13 +552,6 @@ const App: React.FC = () => {
                     </div>
                     <h4 className="text-base font-bold text-gray-900">{note.title}</h4>
                     <p className="mt-2 text-sm text-gray-600 leading-relaxed">{note.summary}</p>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedBlogDraft(note)}
-                      className="mt-4 inline-flex items-center rounded-full bg-white border border-black/10 text-[#1d1d1f] text-xs font-semibold px-3 py-1.5 hover:bg-gray-50 transition-colors"
-                    >
-                      Read draft
-                    </button>
                   </article>
                 ))}
               </div>
