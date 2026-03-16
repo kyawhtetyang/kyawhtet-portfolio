@@ -399,7 +399,7 @@ const App: React.FC = () => {
                 <ul className="space-y-3 text-sm">
                   <li className="flex items-center justify-between border-b border-black/10 pb-2">
                     <span className="text-[#6e6e73]">Role</span>
-                    <span className="font-semibold text-[#1d1d1f]">AI/ML Junior Developer</span>
+                    <span className="font-semibold text-[#1d1d1f]">AI/ML Engineer &amp; Product Builder</span>
                   </li>
                   <li className="flex items-center justify-between border-b border-black/10 pb-2">
                     <span className="text-[#6e6e73]">Address</span>
