@@ -37,6 +37,7 @@ const App: React.FC = () => {
     return localPrivateStoreApps.length > 0 ? localPrivateStoreApps : [];
   }, []);
   const privateStoreEnabled = (import.meta.env.VITE_ENABLE_PRIVATE_STORE as string | undefined)?.trim().toLowerCase() === 'true';
+  const draftsEnabled = (import.meta.env.VITE_ENABLE_DRAFTS as string | undefined)?.trim().toLowerCase() === 'true';
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window === 'undefined') return 'dark';
     const stored = window.localStorage.getItem('theme');
@@ -112,6 +113,27 @@ const App: React.FC = () => {
       title: 'CloudLanguage (MVP)',
       summary: 'Mobile-first language learning MVP for Burmese learners with lesson loop, progress tracking, and review flow in build.',
       stack: 'React, TypeScript, FastAPI, Lesson JSON'
+    }
+  ];
+
+  const draftNotes = [
+    {
+      title: 'CloudLanguage: Lesson Loop Notes',
+      status: 'Draft',
+      summary: 'MVP lesson flow, review queue logic, and data schema decisions.',
+      updated: '2026-03-16'
+    },
+    {
+      title: 'Movie Recommender: API Migration',
+      status: 'Polishing',
+      summary: 'FastAPI endpoint design, auth token format, and demo UX notes.',
+      updated: '2026-03-16'
+    },
+    {
+      title: 'Flagship Portfolio Positioning',
+      status: 'Idea',
+      summary: 'Narrative framing for AI/ML + product builder profile.',
+      updated: '2026-03-15'
     }
   ];
 
@@ -416,6 +438,33 @@ const App: React.FC = () => {
             </section>
 
             <div className="border-t border-black/10"></div>
+
+            {draftsEnabled && (
+              <>
+                <section>
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Drafts (Private)</p>
+                  <p className="text-sm text-gray-600 max-w-3xl mb-6">
+                    Internal writing notes only. Not public yet.
+                  </p>
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {draftNotes.map((note) => (
+                      <article key={note.title} className="bg-white border border-black/10 rounded-2xl p-5">
+                        <div className="flex items-center justify-between gap-3 mb-3">
+                          <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">{note.updated}</p>
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
+                            {note.status}
+                          </span>
+                        </div>
+                        <h4 className="text-base font-bold text-gray-900">{note.title}</h4>
+                        <p className="mt-2 text-sm text-gray-600 leading-relaxed">{note.summary}</p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+
+                <div className="border-t border-black/10"></div>
+              </>
+            )}
 
             <section>
               <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Contact</p>
