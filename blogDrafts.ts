@@ -1,8 +1,16 @@
-import soraUpdate1 from './content/blog/sora-update-1.md?raw';
-import sora2 from './content/blog/sora-2.md?raw';
-import abundantIntelligence from './content/blog/abundant-intelligence.md?raw';
-import jakubAndSzymon from './content/blog/jakub-and-szymon.md?raw';
-import gentleSingularity from './content/blog/gentle-singularity.md?raw';
+import musicAppVpsLaunch20260210 from './content/blog/music-app-vps-launch-2026-02-10.md?raw';
+import fileOrganizerPro20260208 from './content/blog/file-organizer-pro-2026-02-08.md?raw';
+import aimlPortfolioV220260210 from './content/blog/aiml-portfolio-v2-2026-02-10.md?raw';
+import cloudLanguageRebrand20260216 from './content/blog/cloudlanguage-rebrand-2026-02-16.md?raw';
+import aiNotesOs20260318 from './content/blog/ai-notes-os-2026-03-18.md?raw';
+import fakeNewsBilstm20251110 from './content/blog/fakenews-bilstm-2025-11-10.md?raw';
+import movieRecommenderHybrid20251110 from './content/blog/movie-recommender-hybrid-2025-11-10.md?raw';
+import articleAnalyzerSbert20251110 from './content/blog/article-analyzer-sbert-2025-11-10.md?raw';
+import housePriceRegression20260315 from './content/blog/house-price-regression-2026-03-15.md?raw';
+import imageClassifierCnn20260312 from './content/blog/image-classifier-cnn-2026-03-12.md?raw';
+import flaskLoginUser20251110 from './content/blog/flask-loginuser-2025-11-10.md?raw';
+import fastapiCrud20251001 from './content/blog/fastapi-crud-2025-10-01.md?raw';
+import mediaDownloaderAutomation20251024 from './content/blog/media-downloader-automation-2025-10-24.md?raw';
 
 export type BlogDraft = {
   title: string;
@@ -14,38 +22,94 @@ export type BlogDraft = {
 
 export const BLOG_DRAFTS: BlogDraft[] = [
   {
-    title: 'Sora update #1',
-    status: 'Draft',
-    summary: 'Notes on upcoming policy changes, rightsholder controls, and monetization direction.',
-    updated: '2026-03-16',
-    content: soraUpdate1
+    title: 'AI + Human Collaboration OS for Notes',
+    status: 'Project Diary',
+    summary: 'Built a vault/code/storage system to stop notes and codebases from drifting.',
+    updated: '2026-03-18',
+    content: aiNotesOs20260318
   },
   {
-    title: 'Sora 2',
-    status: 'Draft',
-    summary: 'Launch framing for a new model + product, creation-first UX, and safety concerns.',
-    updated: '2026-03-16',
-    content: sora2
+    title: 'House Price Regression - Supervised Learning Focus',
+    status: 'Project Diary',
+    summary: 'Regression pipeline with feature engineering, Ridge/Lasso, and RMSE/MAE/R² evaluation.',
+    updated: '2025-12-15',
+    content: housePriceRegression20260315
   },
   {
-    title: 'Abundant Intelligence',
-    status: 'Idea',
-    summary: 'Why compute is the bottleneck, and what massive infrastructure buildout implies.',
-    updated: '2026-03-16',
-    content: abundantIntelligence
+    title: 'Image Classifier CNN - PyTorch Focus',
+    status: 'Project Diary',
+    summary: 'Augmentation, transfer learning (MobileNetV2), and overfitting control in PyTorch.',
+    updated: '2025-11-13',
+    content: imageClassifierCnn20260312
   },
   {
-    title: 'Jakub and Szymon',
-    status: 'Idea',
-    summary: 'Short recognition note on research + engineering leadership behind major breakthroughs.',
-    updated: '2026-03-16',
-    content: jakubAndSzymon
+    title: 'Flask Login User - First Complete CRUD Project',
+    status: 'Project Diary',
+    summary: 'Flask CRUD app with auth, sessions, roles, and Jinja templates.',
+    updated: '2025-08-11',
+    content: flaskLoginUser20251110
   },
   {
-    title: 'The Gentle Singularity',
-    status: 'Polishing',
-    summary: 'A long-form reflection on rapid AI progress, risks, and societal adaptation.',
-    updated: '2026-03-16',
-    content: gentleSingularity
-  }
+    title: 'FastAPI CRUD - Moving Beyond Flask',
+    status: 'Project Diary',
+    summary: 'FastAPI CRUD app with templates, auth, and SQLite.',
+    updated: '2025-12-01',
+    content: fastapiCrud20251001
+  },
+  {
+    title: 'Media Downloader Automation - First Real Python App',
+    status: 'Project Diary',
+    summary: 'Automated video/audio downloads with config-driven Python scripts.',
+    updated: '2025-10-24',
+    content: mediaDownloaderAutomation20251024
+  },
+  {
+    title: 'Fake News Detector - BiLSTM (First AI/ML Project)',
+    status: 'Project Diary',
+    summary: 'First supervised ML project evolved into a BiLSTM pipeline with preprocessing and evaluation.',
+    updated: '2025-09-08',
+    content: fakeNewsBilstm20251110
+  },
+  {
+    title: 'Movie Recommender Hybrid - Collaborative Filtering (Second Project)',
+    status: 'Project Diary',
+    summary: 'Hybrid recommender with user/item similarity, content TF-IDF, and SVD latent factors.',
+    updated: '2025-09-16',
+    content: movieRecommenderHybrid20251110
+  },
+  {
+    title: 'Article Analyzer (SBERT) - Unsupervised NLP Pipeline',
+    status: 'Project Diary',
+    summary: 'SBERT embeddings + KMeans clustering + FAISS recommendations with transformer NLP.',
+    updated: '2025-10-08',
+    content: articleAnalyzerSbert20251110
+  },
+  {
+    title: 'CloudLanguage - Burmese-First Learning MVP',
+    status: 'Project Diary',
+    summary: 'Mobile-first MVP built for Burmese learners with a music-style listening flow.',
+    updated: '2026-02-16',
+    content: cloudLanguageRebrand20260216
+  },
+  {
+    title: 'AI/ML Portfolio - App Store Style',
+    status: 'Project Diary',
+    summary: 'Rebuilt the portfolio with a CV + projects + blog in a single app-store style layout.',
+    updated: '2025-10-31',
+    content: aimlPortfolioV220260210
+  },
+  {
+    title: 'Music App - First VPS Launch',
+    status: 'Project Diary',
+    summary: 'First VPS deployment with GitHub Pages, Nginx, Postgres metadata, and Cloudflare R2.',
+    updated: '2026-01-21',
+    content: musicAppVpsLaunch20260210
+  },
+  {
+    title: 'File Organizer Pro - First macOS Desktop App',
+    status: 'Project Diary',
+    summary: 'Built a Tauri .dmg app to remove duplicates, auto-rename, and group files by metadata.',
+    updated: '2026-02',
+    content: fileOrganizerPro20260208
+  },
 ];

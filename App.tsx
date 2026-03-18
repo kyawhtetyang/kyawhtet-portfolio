@@ -8,6 +8,8 @@ import { AppDetailModal } from './components/AppDetailModal';
 import profilePhoto from './docs/01_AIML_Portfolio.png';
 import { BLOG_DRAFTS, BlogDraft } from './blogDrafts';
 
+type BlogCategory = 'All';
+
 
 const SidebarItem: React.FC<{ 
   category: Category; 
@@ -52,7 +54,6 @@ const App: React.FC = () => {
   const blogEnabled = (import.meta.env.VITE_ENABLE_BLOG as string | undefined)?.trim().toLowerCase() === 'true';
   const chatEnabled = (import.meta.env.VITE_ENABLE_CHAT as string | undefined)?.trim().toLowerCase() === 'true';
   const appStoreBeta = (import.meta.env.VITE_APPSTORE_BETA as string | undefined)?.trim().toLowerCase() === 'true';
-  const blogBeta = (import.meta.env.VITE_BLOG_BETA as string | undefined)?.trim().toLowerCase() === 'true';
   const chatBeta = (import.meta.env.VITE_CHAT_BETA as string | undefined)?.trim().toLowerCase() === 'true';
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     if (typeof window === 'undefined') return 'dark';
@@ -63,6 +64,7 @@ const App: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category>(Category.Discover);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<ProjectFilter>('Featured');
+  const [selectedBlogCategory, setSelectedBlogCategory] = useState<BlogCategory>('All');
   const [selectedApp, setSelectedApp] = useState<AppInfo | null>(null);
   const [selectedBlogDraft, setSelectedBlogDraft] = useState<BlogDraft | null>(null);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -134,7 +136,16 @@ const App: React.FC = () => {
     }
   ];
 
-  const blogDrafts = BLOG_DRAFTS;
+  const blogDrafts = useMemo(() => {
+    if (selectedBlogCategory === 'All') {
+      return [...BLOG_DRAFTS].sort((a, b) => {
+        const dateOrder = b.updated.localeCompare(a.updated);
+        return dateOrder !== 0 ? dateOrder : a.title.localeCompare(b.title);
+      });
+    }
+
+    return BLOG_DRAFTS;
+  }, [selectedBlogCategory]);
 
   const filteredApps = useMemo(() => {
     const sourceApps = isAppStorePage ? privateStoreApps : APPS;
@@ -270,7 +281,6 @@ const App: React.FC = () => {
               category={Category.Blog}
               active={selectedCategory === Category.Blog}
               onClick={setSelectedCategory}
-              badge={blogBeta ? 'Beta' : undefined}
               icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2zm2 4h6m-6 4h6m-6 4h4" /></svg>}
             />
           )}
@@ -366,8 +376,8 @@ const App: React.FC = () => {
         {isDiscoverPage ? (
           <div className="pt-16 md:pt-20 space-y-8 pb-20">
             <section>
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              <div className="lg:col-span-8 bg-white border border-black/10 rounded-2xl p-6 md:p-7">
+              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
+              <div className="xl:col-span-8 bg-white border border-black/10 rounded-2xl p-6 md:p-7">
                 <h3 className="text-base font-bold text-gray-900 leading-tight">
                   Kyaw Htet | AI/ML Engineer & Product Builder
                 </h3>
@@ -395,27 +405,29 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              <div className="lg:col-span-4 bg-white border border-black/10 rounded-2xl p-6 md:p-7">
+              <div className="xl:col-span-4 bg-white border border-black/10 rounded-2xl p-6 md:p-7">
                 <ul className="space-y-3 text-sm">
-                  <li className="flex items-center justify-between border-b border-black/10 pb-2">
-                    <span className="text-[#6e6e73]">Role</span>
-                    <span className="font-semibold text-[#1d1d1f]">Full-Stack Python Developer (FastAPI/React) + Applied ML</span>
+                  <li className="flex items-start gap-4 border-b border-black/10 pb-2">
+                    <span className="w-16 shrink-0 pt-0.5 text-[#6e6e73]">Role</span>
+                    <span className="min-w-0 flex-1 text-right font-semibold leading-snug text-[#1d1d1f] break-words">
+                      Full-Stack Python Developer (FastAPI/React) + Applied ML
+                    </span>
                   </li>
-                  <li className="flex items-center justify-between border-b border-black/10 pb-2">
-                    <span className="text-[#6e6e73]">Address</span>
-                    <span className="font-semibold text-[#1d1d1f]">{profile.location}</span>
+                  <li className="flex items-start gap-4 border-b border-black/10 pb-2">
+                    <span className="w-16 shrink-0 pt-0.5 text-[#6e6e73]">Address</span>
+                    <span className="min-w-0 flex-1 text-right font-semibold leading-snug text-[#1d1d1f] break-words">{profile.location}</span>
                   </li>
-                  <li className="flex items-center justify-between border-b border-black/10 pb-2">
-                    <span className="text-[#6e6e73]">Phone</span>
-                    <span className="font-semibold text-[#1d1d1f]">{profile.phone}</span>
+                  <li className="flex items-start gap-4 border-b border-black/10 pb-2">
+                    <span className="w-16 shrink-0 pt-0.5 text-[#6e6e73]">Phone</span>
+                    <span className="min-w-0 flex-1 text-right font-semibold leading-snug text-[#1d1d1f] break-words">{profile.phone}</span>
                   </li>
-                  <li className="flex items-center justify-between border-b border-black/10 pb-2">
-                    <span className="text-[#6e6e73]">Status</span>
-                    <span className="font-semibold text-[#1d1d1f]">Open to Collaboration</span>
+                  <li className="flex items-start gap-4 border-b border-black/10 pb-2">
+                    <span className="w-16 shrink-0 pt-0.5 text-[#6e6e73]">Status</span>
+                    <span className="min-w-0 flex-1 text-right font-semibold leading-snug text-[#1d1d1f] break-words">Open to Collaboration</span>
                   </li>
-                  <li className="flex items-center justify-between">
-                    <span className="text-[#6e6e73]">Email</span>
-                    <span className="font-semibold text-[#1d1d1f] truncate ml-4">{profile.email}</span>
+                  <li className="flex items-start gap-4">
+                    <span className="w-16 shrink-0 pt-0.5 text-[#6e6e73]">Email</span>
+                    <span className="min-w-0 flex-1 text-right font-semibold leading-snug text-[#1d1d1f] break-all">{profile.email}</span>
                   </li>
                 </ul>
               </div>
@@ -513,6 +525,22 @@ const App: React.FC = () => {
         ) : isBlogPage ? (
           <div className="pt-16 md:pt-20 space-y-8 pb-20">
             <section>
+              <div className="mb-6">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-[#6e6e73] mb-2">Category</p>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedBlogCategory('All')}
+                    className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                      selectedBlogCategory === 'All'
+                        ? 'bg-[#fa233b] text-white'
+                        : 'bg-white border border-black/10 text-[#1d1d1f] hover:bg-gray-50'
+                    }`}
+                  >
+                    All
+                  </button>
+                </div>
+              </div>
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {blogDrafts.map((note) => (
                   <article
