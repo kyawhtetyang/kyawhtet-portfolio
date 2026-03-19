@@ -7,8 +7,13 @@ import { AppStoreListItem } from './components/AppStoreListItem';
 import { AppDetailModal } from './components/AppDetailModal';
 import profilePhoto from './docs/01_AIML_Portfolio.png';
 import { BLOG_DRAFTS, BlogDraft } from './blogDrafts';
+import { PHOTO_METADATA } from './booksMetadata';
+import { PHOTO_LINKS } from './bookLinks';
 
 type BlogCategory = 'All';
+type PhotoCategory = 'all' | string;
+
+const PHOTO_MODULES = import.meta.glob('./docs/photo/*.jpg', { eager: true, import: 'default' }) as Record<string, string>;
 
 
 const SidebarItem: React.FC<{ 
@@ -52,6 +57,9 @@ const App: React.FC = () => {
   }, []);
   const privateStoreEnabled = (import.meta.env.VITE_ENABLE_PRIVATE_STORE as string | undefined)?.trim().toLowerCase() === 'true';
   const blogEnabled = (import.meta.env.VITE_ENABLE_BLOG as string | undefined)?.trim().toLowerCase() === 'true';
+  const blogBeta = (import.meta.env.VITE_BLOG_BETA as string | undefined)?.trim().toLowerCase() === 'true';
+  const photoEnabled = (import.meta.env.VITE_ENABLE_PHOTO as string | undefined)?.trim().toLowerCase() === 'true';
+  const photoBeta = (import.meta.env.VITE_PHOTO_BETA as string | undefined)?.trim().toLowerCase() === 'true';
   const chatEnabled = (import.meta.env.VITE_ENABLE_CHAT as string | undefined)?.trim().toLowerCase() === 'true';
   const appStoreBeta = (import.meta.env.VITE_APPSTORE_BETA as string | undefined)?.trim().toLowerCase() === 'true';
   const chatBeta = (import.meta.env.VITE_CHAT_BETA as string | undefined)?.trim().toLowerCase() === 'true';
@@ -65,6 +73,7 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<ProjectFilter>('Featured');
   const [selectedBlogCategory, setSelectedBlogCategory] = useState<BlogCategory>('All');
+  const [selectedPhotoCategory, setSelectedPhotoCategory] = useState<PhotoCategory>('all');
   const [selectedApp, setSelectedApp] = useState<AppInfo | null>(null);
   const [selectedBlogDraft, setSelectedBlogDraft] = useState<BlogDraft | null>(null);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -79,6 +88,7 @@ const App: React.FC = () => {
   });
   const isDark = theme === 'dark';
   const isDiscoverPage = selectedCategory === Category.Discover;
+  const isPhotoPage = photoEnabled && selectedCategory === Category.Photo;
   const isChatPage = chatEnabled && selectedCategory === Category.Chat;
   const isProjectsPage = selectedCategory === Category.Projects;
   const isBlogPage = selectedCategory === Category.Blog;
@@ -114,9 +124,77 @@ const App: React.FC = () => {
     'LLM Applications',
     'Python + FastAPI',
     'React + TypeScript',
-    'Product MVP Building',
-    'MLOps & Deployment'
+    'MVP Build',
+    'MLOps + Deploy'
   ];
+
+  const formatPhotoTitle = (slug: string) =>
+    slug
+      .split('_')
+      .filter(Boolean)
+      .map((word) => word[0]?.toUpperCase() + word.slice(1))
+      .join(' ');
+
+  const formatPhotoCategory = (key: string) => {
+    if (key === 'cs') return 'CS';
+    if (key === 'me') return 'Me';
+    if (key === 'other') return 'Other';
+    return key
+      .split('_')
+      .filter(Boolean)
+      .map((word) => word[0]?.toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  const photoItems = useMemo(() => {
+    return Object.entries(PHOTO_MODULES)
+      .map(([path, src]) => {
+        const file = path.split('/').pop() ?? '';
+        const base = file.replace(/\.jpg$/i, '');
+        const [categorySlug, titleSlugRaw] = base.includes('__')
+          ? base.split('__', 2)
+          : (() => {
+              const [prefix, ...restParts] = base.split('_');
+              return [prefix, restParts.join('_') || base];
+            })();
+        const category = categorySlug || 'other';
+        const titleSlug = titleSlugRaw || base;
+        const metadata = PHOTO_METADATA[base];
+        return {
+          id: path,
+          base,
+          src,
+          category,
+          title: formatPhotoTitle(titleSlug),
+          order: metadata?.order ?? Number.MAX_SAFE_INTEGER,
+          href: PHOTO_LINKS[base] ?? src,
+          linkLabel: PHOTO_LINKS[base] ? 'Open study link' : 'Click to view full size'
+        };
+      })
+      .sort((a, b) => {
+        const categoryOrder = a.category.localeCompare(b.category);
+        if (categoryOrder !== 0) return categoryOrder;
+
+        const metadataOrder = a.order - b.order;
+        if (metadataOrder !== 0) return metadataOrder;
+
+        return a.title.localeCompare(b.title);
+      });
+  }, []);
+
+  const photoCategories = useMemo(() => {
+    const keys = new Set(photoItems.map((item) => item.category));
+    const sorted = Array.from(keys).sort((a, b) => a.localeCompare(b));
+    return [
+      { key: 'all', label: 'All' },
+      ...sorted.map((key) => ({ key, label: formatPhotoCategory(key) }))
+    ];
+  }, [photoItems]);
+
+  const filteredPhotoItems =
+    selectedPhotoCategory === 'all'
+      ? photoItems
+      : photoItems.filter((photo) => photo.category === selectedPhotoCategory);
 
   const featuredWork = [
     {
@@ -281,7 +359,17 @@ const App: React.FC = () => {
               category={Category.Blog}
               active={selectedCategory === Category.Blog}
               onClick={setSelectedCategory}
+              badge={blogBeta ? 'Beta' : undefined}
               icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2zm2 4h6m-6 4h6m-6 4h4" /></svg>}
+            />
+          )}
+          {photoEnabled && (
+            <SidebarItem
+              category={Category.Photo}
+              active={selectedCategory === Category.Photo}
+              onClick={setSelectedCategory}
+              badge={photoBeta ? 'Beta' : undefined}
+              icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7a2 2 0 012-2h3l2-2h4l2 2h3a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm9 2a4 4 0 100 8 4 4 0 000-8z" /></svg>}
             />
           )}
           {privateStoreEnabled && (
@@ -335,11 +423,16 @@ const App: React.FC = () => {
                 Beta
               </span>
             )}
+            {isPhotoPage && photoBeta && (
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
+                Beta
+              </span>
+            )}
             </div>
           </div>
           
           <div className="flex items-center gap-3">
-            {!isDiscoverPage && !isChatPage && !isBlogPage && (
+            {!isDiscoverPage && !isChatPage && !isBlogPage && !isPhotoPage && (
               <div className="relative">
                 <input
                   type="text"
@@ -481,6 +574,52 @@ const App: React.FC = () => {
               </div>
             </section>
           </div>
+        ) : isPhotoPage ? (
+          <div className="pt-16 md:pt-20 space-y-8 pb-20">
+            <section>
+              <div className="mb-6">
+                <div className="flex flex-wrap gap-2">
+                  {photoCategories.map((category) => (
+                    <button
+                      key={category.key}
+                      type="button"
+                      onClick={() => setSelectedPhotoCategory(category.key)}
+                      className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
+                        selectedPhotoCategory === category.key
+                          ? 'bg-[#fa233b] text-white'
+                          : 'bg-white border border-black/10 text-[#1d1d1f] hover:bg-gray-50'
+                      }`}
+                    >
+                      {category.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 sm:gap-x-5 gap-y-6">
+                {filteredPhotoItems.map((photo) => (
+                  <a
+                    key={photo.id}
+                    href={photo.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group w-full max-w-[170px] sm:max-w-[180px] mx-auto"
+                  >
+                    <div className="aspect-square overflow-hidden rounded-2xl border border-[#D7DEE8] bg-[#F2F4F7] shadow-sm transition-all group-hover:shadow-md group-hover:bg-[#E8EDF3]">
+                      <img
+                        src={photo.src}
+                        alt={photo.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="mt-2 text-center">
+                      <h4 className="text-[13px] font-medium text-gray-900 truncate leading-tight">{photo.title}</h4>
+                      <p className="text-[11px] text-gray-500 truncate">{photo.linkLabel}</p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </section>
+          </div>
         ) : isChatPage ? (
           <div className="pt-16 md:pt-20 pb-36 lg:pb-28">
             <section className="h-[68vh] min-h-[520px] flex flex-col overflow-hidden">
@@ -526,7 +665,6 @@ const App: React.FC = () => {
           <div className="pt-16 md:pt-20 space-y-8 pb-20">
             <section>
               <div className="mb-6">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-[#6e6e73] mb-2">Category</p>
                 <div className="flex flex-wrap gap-2">
                   <button
                     type="button"
@@ -545,17 +683,29 @@ const App: React.FC = () => {
                 {blogDrafts.map((note) => (
                   <article
                     key={note.title}
-                    className="bg-white border border-black/10 rounded-2xl p-5 cursor-pointer hover:bg-gray-50 transition-colors"
+                    className="cursor-pointer transition-transform duration-200 hover:-translate-y-0.5"
                     onClick={() => setSelectedBlogDraft(note)}
                   >
-                    <div className="flex items-center justify-between gap-3 mb-3">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">{note.updated}</p>
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
-                        {note.status}
-                      </span>
+                    {note.thumbnail && (
+                      <div className="aspect-[16/9] rounded-2xl border border-[#D7DEE8] bg-[#F2F4F7] overflow-hidden shadow-sm transition-all hover:shadow-md">
+                        <img
+                          src={note.thumbnail}
+                          alt={note.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className={note.thumbnail ? 'pt-3 px-1' : 'rounded-2xl border border-black/10 bg-white p-5 hover:bg-gray-50 transition-colors'}>
+                    <h4 className="text-base font-bold leading-snug text-gray-900">{note.title}</h4>
+                    <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-medium text-gray-500">
+                      <span className="uppercase tracking-wider text-[#fa233b]">{note.status}</span>
+                      <span className="text-gray-300">•</span>
+                      <span>{note.updated}</span>
                     </div>
-                    <h4 className="text-base font-bold text-gray-900">{note.title}</h4>
-                    <p className="mt-2 text-sm text-gray-600 leading-relaxed">{note.summary}</p>
+                    {!note.thumbnail && (
+                      <p className="mt-2.5 text-sm text-gray-600 leading-relaxed">{note.summary}</p>
+                    )}
+                    </div>
                   </article>
                 ))}
               </div>
@@ -574,7 +724,6 @@ const App: React.FC = () => {
 
               {isProjectsPage && (
                 <div className="mb-6">
-                  <p className="text-[11px] font-bold uppercase tracking-wider text-[#6e6e73] mb-2">Category</p>
                   <div className="flex flex-wrap gap-2">
                   {PROJECT_FILTERS.map((filter) => (
                     <button
@@ -635,6 +784,11 @@ const App: React.FC = () => {
         {blogEnabled && (
           <button onClick={() => setSelectedCategory(Category.Blog)} className={`p-2 rounded-full ${selectedCategory === Category.Blog ? 'text-[#fa233b]' : 'text-gray-400'}`}>
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2zm2 4h6m-6 4h6m-6 4h4" /></svg>
+          </button>
+        )}
+        {photoEnabled && (
+          <button onClick={() => setSelectedCategory(Category.Photo)} className={`p-2 rounded-full ${selectedCategory === Category.Photo ? 'text-[#fa233b]' : 'text-gray-400'}`}>
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7a2 2 0 012-2h3l2-2h4l2 2h3a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm9 2a4 4 0 100 8 4 4 0 000-8z" /></svg>
           </button>
         )}
         {privateStoreEnabled && (

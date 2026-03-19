@@ -3,6 +3,7 @@ export enum Category {
   Projects = 'Projects',
   Blog = 'Blog',
   AppStore = 'App Store',
+  Photo = 'Books',
   Chat = 'Chat'
 }
 
