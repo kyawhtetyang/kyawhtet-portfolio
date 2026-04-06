@@ -116,9 +116,9 @@ export const BLOG_DRAFTS: BlogDraft[] = [
     thumbnail: cloudLanguageThumbnail
   },
   {
-    title: 'AI/ML Portfolio - App Store Style',
+    title: 'AI/ML Portfolio - App-Inspired Design',
     status: 'Project Diary',
-    summary: 'Rebuilt the portfolio with a CV + projects + blog in a single app-store style layout.',
+    summary: 'Rebuilt the portfolio with a CV + projects + blog in a single app-inspired layout.',
     updated: '2025-10-31',
     content: aimlPortfolioV220260210,
     thumbnail: aimlPortfolioThumbnail

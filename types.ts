@@ -2,9 +2,9 @@ export enum Category {
   Discover = 'Discover',
   Projects = 'Projects',
   Blog = 'Blog',
-  AppStore = 'App Store',
   Photo = 'Books',
-  Chat = 'Chat'
+  Chat = 'Chat',
+  Settings = 'Settings'
 }
 
 export interface AppInfo {

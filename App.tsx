@@ -3,18 +3,29 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Category, AppInfo } from './types';
 import { PROJECT_FILTERS, ProjectFilter, getProjectFilterType } from './projectType';
 import { APPS } from './constants';
-import { AppStoreListItem } from './components/AppStoreListItem';
+import { appConfig } from './config';
+import { AppCard } from './components/AppCard';
+import { AppListItem } from './components/AppListItem';
 import { AppDetailModal } from './components/AppDetailModal';
+import { SettingsView } from './components/SettingsView';
 import profilePhoto from './docs/01_AIML_Portfolio.png';
 import { BLOG_DRAFTS, BlogDraft } from './blogDrafts';
 import { PHOTO_METADATA } from './booksMetadata';
 import { PHOTO_LINKS } from './bookLinks';
+import { buildMobileNavItems, buildSidebarSections } from './sidebarConfig';
+import {
+  getInitialCategory,
+  getVisibleCategories,
+  LAST_CATEGORY_KEY,
+  readUserSettings,
+  USER_SETTINGS_KEY,
+  UserSettings,
+} from './userSettings';
 
 type BlogCategory = 'All';
 type PhotoCategory = 'all' | string;
 
 const PHOTO_MODULES = import.meta.glob('./docs/photo/*.jpg', { eager: true, import: 'default' }) as Record<string, string>;
-
 
 const SidebarItem: React.FC<{ 
   category: Category; 
@@ -22,23 +33,26 @@ const SidebarItem: React.FC<{
   onClick: (cat: Category) => void;
   icon: React.ReactNode;
   badge?: string;
-}> = ({ category, active, onClick, icon, badge }) => (
+  compact?: boolean;
+}> = ({ category, active, onClick, icon, badge, compact = false }) => (
   <button 
     onClick={() => onClick(category)}
-    className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
+    aria-label={category}
+    title={category}
+    className={`w-full flex items-center md:justify-center ${compact ? 'lg:justify-center' : 'lg:justify-between'} gap-3 md:px-3 ${compact ? 'lg:px-3' : 'lg:px-4'} py-2.5 rounded-lg transition-all duration-200 group ${
       active 
         ? 'bg-black/5' 
         : 'text-gray-500 hover:bg-black/5'
     }`}
   >
-    <span className="flex items-center gap-3 min-w-0">
+    <span className={`flex items-center md:justify-center ${compact ? 'lg:justify-center' : 'lg:justify-start'} gap-3 min-w-0`}>
       <span className={`${active ? 'text-[#fa233b]' : 'text-gray-400'}`}>
         {icon}
       </span>
-      <span className={`text-sm font-semibold ${active ? 'text-[#fa233b]' : 'text-inherit'}`}>{category}</span>
+      <span className={`${compact ? 'hidden' : 'hidden lg:inline'} text-sm font-semibold ${active ? 'text-[#fa233b]' : 'text-inherit'}`}>{category}</span>
     </span>
     {badge && (
-      <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+      <span className={`${compact ? 'hidden' : 'hidden lg:inline-flex'} text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
         active
           ? 'bg-[#1d1d1f] text-white'
           : 'bg-black/10 text-[#1d1d1f]'
@@ -50,26 +64,8 @@ const SidebarItem: React.FC<{
 );
 
 const App: React.FC = () => {
-  const privateStoreApps = useMemo(() => {
-    const privateStoreLocalModules = import.meta.glob<{ PRIVATE_STORE_APPS?: AppInfo[] }>('./privateStore.local.ts', { eager: true });
-    const localPrivateStoreApps = Object.values(privateStoreLocalModules).flatMap((mod) => mod.PRIVATE_STORE_APPS ?? []);
-    return localPrivateStoreApps.length > 0 ? localPrivateStoreApps : [];
-  }, []);
-  const privateStoreEnabled = (import.meta.env.VITE_ENABLE_PRIVATE_STORE as string | undefined)?.trim().toLowerCase() === 'true';
-  const blogEnabled = (import.meta.env.VITE_ENABLE_BLOG as string | undefined)?.trim().toLowerCase() === 'true';
-  const blogBeta = (import.meta.env.VITE_BLOG_BETA as string | undefined)?.trim().toLowerCase() === 'true';
-  const photoEnabled = (import.meta.env.VITE_ENABLE_PHOTO as string | undefined)?.trim().toLowerCase() === 'true';
-  const photoBeta = (import.meta.env.VITE_PHOTO_BETA as string | undefined)?.trim().toLowerCase() === 'true';
-  const chatEnabled = (import.meta.env.VITE_ENABLE_CHAT as string | undefined)?.trim().toLowerCase() === 'true';
-  const appStoreBeta = (import.meta.env.VITE_APPSTORE_BETA as string | undefined)?.trim().toLowerCase() === 'true';
-  const chatBeta = (import.meta.env.VITE_CHAT_BETA as string | undefined)?.trim().toLowerCase() === 'true';
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window === 'undefined') return 'dark';
-    const stored = window.localStorage.getItem('theme');
-    if (stored === 'light' || stored === 'dark') return stored;
-    return 'dark';
-  });
-  const [selectedCategory, setSelectedCategory] = useState<Category>(Category.Discover);
+  const [userSettings, setUserSettings] = useState<UserSettings>(readUserSettings);
+  const [selectedCategory, setSelectedCategory] = useState<Category>(getInitialCategory);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<ProjectFilter>('Featured');
   const [selectedBlogCategory, setSelectedBlogCategory] = useState<BlogCategory>('All');
@@ -86,13 +82,55 @@ const App: React.FC = () => {
     type: 'idle',
     message: ''
   });
+  const theme = userSettings.theme;
+  const visibleCategories = getVisibleCategories(userSettings);
+  const blogVisible = visibleCategories.includes(Category.Blog);
+  const photoVisible = visibleCategories.includes(Category.Photo);
+  const chatVisible = visibleCategories.includes(Category.Chat);
+  const blogBadge = appConfig.beta.blog ? 'Beta' : undefined;
+  const photoBadge = appConfig.beta.photo ? 'Beta' : undefined;
+  const chatBadge = appConfig.beta.chat ? 'Beta' : undefined;
+  const settingsBadge = 'Beta';
+  const sidebarSections = useMemo(
+    () =>
+      buildSidebarSections({
+        blogBadge,
+        blogVisible,
+        chatBadge,
+        chatVisible,
+        photoBadge,
+        photoVisible,
+        settingsBadge,
+      }),
+    [blogBadge, blogVisible, chatBadge, chatVisible, photoBadge, photoVisible, settingsBadge]
+  );
+  const mobileNavItems = useMemo(
+    () =>
+      buildMobileNavItems({
+        blogBadge,
+        blogVisible,
+        chatBadge,
+        chatVisible,
+        photoBadge,
+        photoVisible,
+        settingsBadge,
+      }),
+    [blogBadge, blogVisible, chatBadge, chatVisible, photoBadge, photoVisible, settingsBadge]
+  );
+  const compactSidebar = userSettings.preferCompactSidebar;
+  const photoGridClass = userSettings.compactGrid
+    ? 'grid grid-cols-3 md:grid-cols-6 lg:grid-cols-7 gap-x-3 sm:gap-x-4 gap-y-5'
+    : 'grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-x-4 sm:gap-x-5 gap-y-6';
+  const appCardGridClass = userSettings.compactGrid
+    ? 'grid grid-cols-3 md:grid-cols-6 lg:grid-cols-7 gap-x-3 sm:gap-x-4 gap-y-5'
+    : 'grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-x-4 sm:gap-x-5 gap-y-6';
   const isDark = theme === 'dark';
   const isDiscoverPage = selectedCategory === Category.Discover;
-  const isPhotoPage = photoEnabled && selectedCategory === Category.Photo;
-  const isChatPage = chatEnabled && selectedCategory === Category.Chat;
+  const isPhotoPage = photoVisible && selectedCategory === Category.Photo;
+  const isChatPage = chatVisible && selectedCategory === Category.Chat;
   const isProjectsPage = selectedCategory === Category.Projects;
   const isBlogPage = selectedCategory === Category.Blog;
-  const isAppStorePage = selectedCategory === Category.AppStore;
+  const isSettingsPage = selectedCategory === Category.Settings;
   const profile = {
     email: 'kyaw.htet.yang@gmail.com',
     linkedin: 'https://linkedin.com/in/kyawhtetyang',
@@ -102,7 +140,7 @@ const App: React.FC = () => {
     location: 'Yangon, Myanmar'
   };
 
-  const formspreeEndpoint = (import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined)?.trim();
+  const formspreeEndpoint = appConfig.formspreeEndpoint;
 
   const chatSeedMessages = [
     {
@@ -226,8 +264,7 @@ const App: React.FC = () => {
   }, [selectedBlogCategory]);
 
   const filteredApps = useMemo(() => {
-    const sourceApps = isAppStorePage ? privateStoreApps : APPS;
-    let list = sourceApps;
+    let list = APPS;
 
     if (isProjectsPage && selectedProjectFilter !== 'All') {
       if (selectedProjectFilter === 'Featured') {
@@ -245,11 +282,17 @@ const App: React.FC = () => {
     }
 
     return list;
-  }, [isAppStorePage, isProjectsPage, privateStoreApps, searchQuery, selectedProjectFilter]);
+  }, [isProjectsPage, searchQuery, selectedProjectFilter]);
 
   const handleAppClick = (app: AppInfo) => {
     setSelectedApp(app);
   };
+
+  useEffect(() => {
+    if (!visibleCategories.includes(selectedCategory)) {
+      setSelectedCategory(Category.Discover);
+    }
+  }, [selectedCategory, visibleCategories]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -258,15 +301,39 @@ const App: React.FC = () => {
     } else {
       root.classList.remove('dark');
     }
+
     try {
+      window.localStorage.setItem(USER_SETTINGS_KEY, JSON.stringify(userSettings));
       window.localStorage.setItem('theme', theme);
     } catch {
       // Ignore storage errors (private mode or blocked storage).
     }
-  }, [theme]);
+  }, [theme, userSettings]);
+
+  useEffect(() => {
+    try {
+      if (userSettings.rememberLastTab && visibleCategories.includes(selectedCategory) && selectedCategory !== Category.Settings) {
+        window.localStorage.setItem(LAST_CATEGORY_KEY, selectedCategory);
+      } else {
+        window.localStorage.removeItem(LAST_CATEGORY_KEY);
+      }
+    } catch {
+      // Ignore storage errors (private mode or blocked storage).
+    }
+  }, [selectedCategory, userSettings.rememberLastTab, visibleCategories]);
 
   const toggleTheme = () => {
-    setTheme((current) => (current === 'dark' ? 'light' : 'dark'));
+    setUserSettings((current) => ({
+      ...current,
+      theme: current.theme === 'dark' ? 'light' : 'dark',
+    }));
+  };
+
+  const updateSetting = <K extends keyof UserSettings>(key: K, value: UserSettings[K]) => {
+    setUserSettings((current) => ({
+      ...current,
+      [key]: value,
+    }));
   };
 
   const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -324,115 +391,81 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen flex bg-[#f5f5f7]">
       {/* Sidebar - Desktop Only */}
-      <aside className="hidden lg:flex flex-col w-64 glass border-r border-black/5 p-6 fixed inset-y-0 z-20">
-        <div className="mb-10 pl-2">
+      <aside className={`hidden md:flex flex-col md:w-20 ${compactSidebar ? 'lg:w-20' : 'lg:w-64'} glass border-r border-black/5 md:px-3 md:py-6 ${compactSidebar ? 'lg:px-3 lg:py-6' : 'lg:p-6'} fixed inset-y-0 z-20`}>
+        <div className="mb-10 md:px-0">
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="text-2xl font-bold tracking-tight flex items-center gap-2 hover:opacity-85 transition-opacity"
+            className={`w-full flex items-center justify-center ${compactSidebar ? 'lg:justify-center lg:px-0' : 'lg:justify-start lg:px-4'} gap-2 rounded-xl hover:bg-black/5 transition-colors md:px-0 md:py-2 lg:py-2.5`}
             aria-label="Reload page"
+            title="Kyaw Htet"
           >
             <img
               src={profilePhoto}
               alt="Kyaw Htet"
               className="w-8 h-8 rounded-full object-cover border border-gray-200"
             />
-            Kyaw Htet
+            <span className={`${compactSidebar ? 'hidden' : 'hidden lg:inline'} text-2xl font-bold tracking-tight`}>Kyaw Htet</span>
           </button>
         </div>
 
-        <nav className="space-y-1">
-          <SidebarItem 
-            category={Category.Discover} 
-            active={selectedCategory === Category.Discover} 
-            onClick={setSelectedCategory}
-            icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>}
-          />
-          <SidebarItem 
-            category={Category.Projects} 
-            active={selectedCategory === Category.Projects} 
-            onClick={setSelectedCategory}
-            icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7h8v13H3V7zm10-3h8v16h-8V4z" /></svg>}
-          />
-          {blogEnabled && (
-            <SidebarItem
-              category={Category.Blog}
-              active={selectedCategory === Category.Blog}
-              onClick={setSelectedCategory}
-              badge={blogBeta ? 'Beta' : undefined}
-              icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2zm2 4h6m-6 4h6m-6 4h4" /></svg>}
-            />
-          )}
-          {photoEnabled && (
-            <SidebarItem
-              category={Category.Photo}
-              active={selectedCategory === Category.Photo}
-              onClick={setSelectedCategory}
-              badge={photoBeta ? 'Beta' : undefined}
-              icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7a2 2 0 012-2h3l2-2h4l2 2h3a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm9 2a4 4 0 100 8 4 4 0 000-8z" /></svg>}
-            />
-          )}
-          {privateStoreEnabled && (
-            <SidebarItem
-              category={Category.AppStore}
-              active={selectedCategory === Category.AppStore}
-              onClick={setSelectedCategory}
-              badge={appStoreBeta ? 'Beta' : undefined}
-              icon={<svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 12h14M5 16h14" /></svg>}
-            />
-          )}
-          {chatEnabled && (
-            <button
-              onClick={() => setSelectedCategory(Category.Chat)}
-              className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
-                selectedCategory === Category.Chat
-                  ? 'bg-black/5'
-                  : 'text-gray-500 hover:bg-black/5'
-              }`}
-            >
-              <span className="flex items-center gap-3 min-w-0">
-                <span className={`${selectedCategory === Category.Chat ? 'text-[#fa233b]' : 'text-gray-400'}`}><svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h8M8 14h5m8-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </span>
-                <span className={`text-sm font-semibold truncate ${selectedCategory === Category.Chat ? 'text-[#fa233b]' : 'text-inherit'}`}>{Category.Chat}</span>
-              </span>
-              {chatBeta && (
-                <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                  selectedCategory === Category.Chat
-                    ? 'bg-[#1d1d1f] text-white'
-                    : 'bg-black/10 text-[#1d1d1f]'
-                }`}>
-                  Beta
-                </span>
-              )}
-            </button>
-          )}
+        <nav className="space-y-6">
+          {sidebarSections.map((section, index) => (
+            <div key={section.title}>
+              {index > 0 ? (
+                <div
+                  className={`mx-auto mb-4 mt-1 h-px w-10 bg-black/10 ${compactSidebar ? '' : 'lg:hidden'}`}
+                  aria-hidden="true"
+                />
+              ) : null}
+              <h2 className={`mb-2 text-[11px] font-bold uppercase tracking-widest text-[#86868b] ${compactSidebar ? 'hidden' : 'hidden lg:block px-3'}`}>
+                {section.title}
+              </h2>
+              <div className="space-y-1">
+                {section.items.map((item) => (
+                  <SidebarItem
+                    key={item.category}
+                    category={item.category}
+                    active={selectedCategory === item.category}
+                    onClick={setSelectedCategory}
+                    badge={item.badge}
+                    compact={compactSidebar}
+                    icon={item.renderIcon('w-5 h-5')}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
         </nav>
 
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 lg:ml-64 pt-0 px-4 pb-4 md:px-6 md:pb-6 lg:px-6 lg:pb-8">
-        <header className="fixed top-0 left-0 right-0 lg:left-64 z-40 px-4 md:px-6 lg:px-6 h-12 md:h-14 bg-white border-b border-black/10 flex items-center justify-between gap-3">
+      <main className={`flex-1 md:ml-20 ${compactSidebar ? 'lg:ml-20' : 'lg:ml-64'} pt-0 px-4 pb-4 md:px-6 md:pb-6 lg:px-6 lg:pb-8`}>
+        <header className={`fixed top-0 left-0 right-0 md:left-20 ${compactSidebar ? 'lg:left-20' : 'lg:left-64'} z-40 px-4 md:px-6 lg:px-6 h-12 md:h-14 bg-white border-b border-black/10 flex items-center justify-between gap-3`}>
           <div>
             <div className="flex items-center gap-3">
               <h2 className="text-lg md:text-xl font-semibold text-[#1d1d1f] tracking-tight">{selectedCategory}</h2>
-            {isChatPage && chatBeta && (
+            {isChatPage && chatBadge && (
               <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
-                Beta
+                {chatBadge}
               </span>
             )}
-            {isPhotoPage && photoBeta && (
+            {isPhotoPage && photoBadge && (
               <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
-                Beta
+                {photoBadge}
+              </span>
+            )}
+            {isSettingsPage && (
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
+                {settingsBadge}
               </span>
             )}
             </div>
           </div>
           
           <div className="flex items-center gap-3">
-            {!isDiscoverPage && !isChatPage && !isBlogPage && !isPhotoPage && (
+            {!isDiscoverPage && !isChatPage && !isBlogPage && !isPhotoPage && !isSettingsPage && (
               <div className="relative">
                 <input
                   type="text"
@@ -531,7 +564,7 @@ const App: React.FC = () => {
 
             <section>
               <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Featured Work</p>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {featuredWork.map((project) => (
                   <article key={project.title} className="bg-white border border-black/10 rounded-2xl p-5">
                     <h4 className="text-base font-bold text-gray-900">{project.title}</h4>
@@ -574,6 +607,15 @@ const App: React.FC = () => {
               </div>
             </section>
           </div>
+        ) : isSettingsPage ? (
+          <SettingsView
+            compactSidebar={compactSidebar}
+            formspreeEndpoint={formspreeEndpoint}
+            onUpdateSetting={updateSetting}
+            theme={theme}
+            userSettings={userSettings}
+            visibleCategories={visibleCategories}
+          />
         ) : isPhotoPage ? (
           <div className="pt-16 md:pt-20 space-y-8 pb-20">
             <section>
@@ -595,7 +637,7 @@ const App: React.FC = () => {
                   ))}
                 </div>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-x-4 sm:gap-x-5 gap-y-6">
+              <div className={photoGridClass}>
                 {filteredPhotoItems.map((photo) => (
                   <a
                     key={photo.id}
@@ -643,7 +685,7 @@ const App: React.FC = () => {
               </div>
             </section>
 
-            <div className="fixed left-0 right-0 bottom-16 lg:bottom-0 lg:left-64 z-40 px-4 md:px-8 lg:px-12 pb-3 lg:pb-4">
+            <div className={`fixed left-0 right-0 bottom-16 md:bottom-0 md:left-20 ${compactSidebar ? 'lg:left-20' : 'lg:left-64'} z-40 px-4 md:px-8 lg:px-12 pb-3 md:pb-4`}>
               <div className="border-t border-black/10 pt-3 md:pt-4">
                 <div className="flex items-end gap-3">
                   <textarea
@@ -679,7 +721,7 @@ const App: React.FC = () => {
                   </button>
                 </div>
               </div>
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {blogDrafts.map((note) => (
                   <article
                     key={note.title}
@@ -743,21 +785,21 @@ const App: React.FC = () => {
                 </div>
               )}
 
-              {isProjectsPage || isAppStorePage ? (
+              {isProjectsPage ? (
                 <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-x-8">
                   {filteredApps.map(app => (
-                    <AppStoreListItem key={app.id} app={app} onOpen={handleAppClick} />
+                    <AppListItem key={app.id} app={app} onOpen={handleAppClick} />
                   ))}
                   {filteredApps.length === 0 && (
                     <div className="py-20 text-center lg:col-span-2">
                       <p className="text-gray-400 font-medium">
-                        {isProjectsPage ? 'No projects found matching your criteria.' : 'No apps found matching your criteria.'}
+                        No projects found matching your criteria.
                       </p>
                     </div>
                   )}
                 </div>
               ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-x-4 sm:gap-x-5 gap-y-6">
+                <div className={appCardGridClass}>
                   {filteredApps.map(app => (
                     <AppCard key={app.id} app={app} onClick={handleAppClick} />
                   ))}
@@ -774,33 +816,16 @@ const App: React.FC = () => {
       </main>
 
       {/* Mobile Navigation - Only visible on small screens */}
-      <nav className="lg:hidden fixed bottom-0 inset-x-0 h-16 glass border-t border-black/5 z-50 flex items-center justify-around px-4">
-        <button onClick={() => setSelectedCategory(Category.Discover)} className={`p-2 rounded-full ${selectedCategory === Category.Discover ? 'text-[#fa233b]' : 'text-gray-400'}`}>
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
-        </button>
-        <button onClick={() => setSelectedCategory(Category.Projects)} className={`p-2 rounded-full ${selectedCategory === Category.Projects ? 'text-[#fa233b]' : 'text-gray-400'}`}>
-          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7h8v13H3V7zm10-3h8v16h-8V4z" /></svg>
-        </button>
-        {blogEnabled && (
-          <button onClick={() => setSelectedCategory(Category.Blog)} className={`p-2 rounded-full ${selectedCategory === Category.Blog ? 'text-[#fa233b]' : 'text-gray-400'}`}>
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2zm2 4h6m-6 4h6m-6 4h4" /></svg>
+      <nav className="md:hidden fixed bottom-0 inset-x-0 h-16 glass border-t border-black/5 z-50 flex items-center justify-between px-3">
+        {mobileNavItems.map((item) => (
+          <button
+            key={item.category}
+            onClick={() => setSelectedCategory(item.category)}
+            className={`p-2 rounded-full ${selectedCategory === item.category ? 'text-[#fa233b]' : 'text-gray-400'}`}
+          >
+            {item.renderIcon('w-6 h-6')}
           </button>
-        )}
-        {photoEnabled && (
-          <button onClick={() => setSelectedCategory(Category.Photo)} className={`p-2 rounded-full ${selectedCategory === Category.Photo ? 'text-[#fa233b]' : 'text-gray-400'}`}>
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7a2 2 0 012-2h3l2-2h4l2 2h3a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V7zm9 2a4 4 0 100 8 4 4 0 000-8z" /></svg>
-          </button>
-        )}
-        {privateStoreEnabled && (
-          <button onClick={() => setSelectedCategory(Category.AppStore)} className={`p-2 rounded-full ${selectedCategory === Category.AppStore ? 'text-[#fa233b]' : 'text-gray-400'}`}>
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 12h14M5 16h14" /></svg>
-          </button>
-        )}
-        {chatEnabled && (
-          <button onClick={() => setSelectedCategory(Category.Chat)} className={`p-2 rounded-full ${selectedCategory === Category.Chat ? 'text-[#fa233b]' : 'text-gray-400'}`}>
-            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h8M8 14h5m8-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-          </button>
-        )}
+        ))}
       </nav>
 
       {isContactModalOpen && (
@@ -809,17 +834,29 @@ const App: React.FC = () => {
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => setIsContactModalOpen(false)}
           />
-          <div className="relative w-full max-w-3xl bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300">
-            <div className="flex items-center justify-between px-6 py-4 md:px-10 md:py-6 bg-white/80 backdrop-blur-md sticky top-0 z-10 border-b border-gray-100">
+          <div className={`relative w-full max-w-3xl rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300 ${
+            isDark
+              ? 'bg-[#111315] border border-white/10'
+              : 'bg-white'
+          }`}>
+            <div className={`flex items-center justify-between px-6 py-4 md:px-10 md:py-6 backdrop-blur-md sticky top-0 z-10 border-b ${
+              isDark
+                ? 'bg-[#111315]/90 border-white/10'
+                : 'bg-white/80 border-gray-100'
+            }`}>
               <div className="text-left">
-                <h2 className="text-xl font-bold text-gray-900">Contact</h2>
-                <p className="text-sm text-gray-500">Share your project brief.</p>
+                <h2 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>Contact</h2>
+                <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>Share your project brief.</p>
               </div>
               <button
                 onClick={() => setIsContactModalOpen(false)}
-                className="p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+                className={`p-2 rounded-full transition-colors ${
+                  isDark
+                    ? 'bg-white/8 hover:bg-white/12'
+                    : 'bg-gray-100 hover:bg-gray-200'
+                }`}
               >
-                <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className={`w-5 h-5 ${isDark ? 'text-gray-300' : 'text-gray-500'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -827,16 +864,28 @@ const App: React.FC = () => {
             <div className="flex-1 overflow-y-auto p-6 md:p-10 text-left">
               <form onSubmit={handleContactSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <label className="flex flex-col gap-2">
-                  <span className="text-sm font-medium text-[#1d1d1f]">Name</span>
-                  <input type="text" value={contactName} onChange={(e) => { setContactName(e.target.value); if (contactSubmitState.type !== 'idle') setContactSubmitState({ type: 'idle', message: '' }); }} placeholder="Your name" className="bg-white/95 border border-black/10 rounded-lg px-4 py-2.5 text-sm outline-none" />
+                  <span className={`text-sm font-medium ${isDark ? 'text-gray-100' : 'text-[#1d1d1f]'}`}>Name</span>
+                  <input type="text" value={contactName} onChange={(e) => { setContactName(e.target.value); if (contactSubmitState.type !== 'idle') setContactSubmitState({ type: 'idle', message: '' }); }} placeholder="Your name" className={`rounded-lg px-4 py-2.5 text-sm outline-none ${
+                    isDark
+                      ? 'bg-white/5 border border-white/10 text-white placeholder:text-gray-500'
+                      : 'bg-white/95 border border-black/10 text-[#1d1d1f]'
+                  }`} />
                 </label>
                 <label className="flex flex-col gap-2">
-                  <span className="text-sm font-medium text-[#1d1d1f]">Email</span>
-                  <input type="email" required value={contactEmail} onChange={(e) => { setContactEmail(e.target.value); if (contactSubmitState.type !== 'idle') setContactSubmitState({ type: 'idle', message: '' }); }} placeholder="you@example.com" className="bg-white/95 border border-black/10 rounded-lg px-4 py-2.5 text-sm outline-none" />
+                  <span className={`text-sm font-medium ${isDark ? 'text-gray-100' : 'text-[#1d1d1f]'}`}>Email</span>
+                  <input type="email" required value={contactEmail} onChange={(e) => { setContactEmail(e.target.value); if (contactSubmitState.type !== 'idle') setContactSubmitState({ type: 'idle', message: '' }); }} placeholder="you@example.com" className={`rounded-lg px-4 py-2.5 text-sm outline-none ${
+                    isDark
+                      ? 'bg-white/5 border border-white/10 text-white placeholder:text-gray-500'
+                      : 'bg-white/95 border border-black/10 text-[#1d1d1f]'
+                  }`} />
                 </label>
                 <label className="flex flex-col gap-2 md:col-span-2">
-                  <span className="text-sm font-medium text-[#1d1d1f]">Project Type</span>
-                  <select value={contactProjectType} onChange={(e) => { setContactProjectType(e.target.value); if (contactSubmitState.type !== 'idle') setContactSubmitState({ type: 'idle', message: '' }); }} className="bg-white/95 border border-black/10 rounded-lg px-4 py-2.5 text-sm outline-none">
+                  <span className={`text-sm font-medium ${isDark ? 'text-gray-100' : 'text-[#1d1d1f]'}`}>Project Type</span>
+                  <select value={contactProjectType} onChange={(e) => { setContactProjectType(e.target.value); if (contactSubmitState.type !== 'idle') setContactSubmitState({ type: 'idle', message: '' }); }} className={`rounded-lg px-4 py-2.5 text-sm outline-none ${
+                    isDark
+                      ? 'bg-white/5 border border-white/10 text-white'
+                      : 'bg-white/95 border border-black/10 text-[#1d1d1f]'
+                  }`}>
                     <option>AI/ML</option>
                     <option>Python</option>
                     <option>Web App</option>
@@ -845,11 +894,15 @@ const App: React.FC = () => {
                   </select>
                 </label>
                 <label className="flex flex-col gap-2 md:col-span-2">
-                  <span className="text-sm font-medium text-[#1d1d1f]">Message</span>
-                  <textarea rows={6} required value={contactMessage} onChange={(e) => { setContactMessage(e.target.value); if (contactSubmitState.type !== 'idle') setContactSubmitState({ type: 'idle', message: '' }); }} placeholder="Tell me about your goals, expected output, and timeline." className="bg-white/95 border border-black/10 rounded-lg px-4 py-3 text-sm outline-none resize-y" />
+                  <span className={`text-sm font-medium ${isDark ? 'text-gray-100' : 'text-[#1d1d1f]'}`}>Message</span>
+                  <textarea rows={6} required value={contactMessage} onChange={(e) => { setContactMessage(e.target.value); if (contactSubmitState.type !== 'idle') setContactSubmitState({ type: 'idle', message: '' }); }} placeholder="Tell me about your goals, expected output, and timeline." className={`rounded-lg px-4 py-3 text-sm outline-none resize-y ${
+                    isDark
+                      ? 'bg-white/5 border border-white/10 text-white placeholder:text-gray-500'
+                      : 'bg-white/95 border border-black/10 text-[#1d1d1f]'
+                  }`} />
                 </label>
                 <div className="md:col-span-2 flex items-center justify-between gap-4 flex-wrap">
-                  <p className="text-xs text-[#6e6e73]">For urgent requests, email me directly.</p>
+                  <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-[#6e6e73]'}`}>For urgent requests, email me directly.</p>
                   <button type="submit" disabled={isSubmittingContact} className="inline-flex items-center rounded-lg bg-[#fa233b] text-white text-sm font-semibold px-5 py-2.5 hover:bg-[#d91e33] transition-colors disabled:opacity-60 disabled:cursor-not-allowed">{isSubmittingContact ? 'Sending...' : 'Send Message'}</button>
                 </div>
                 {contactSubmitState.type !== 'idle' && (
