@@ -19,7 +19,7 @@ export const APPS: AppInfo[] = [
     outcome: 'Building an end-to-end lesson loop with progress persistence and review queue.',
     developer: 'Kyaw Htet',
     featured: true,
-    website: 'https://cloudlanguage.vercel.app/',
+    website: 'https://cloudlanguage.kyawhtet.com/',
     repo: 'https://github.com/kyawhtetyang/Cloud_Language'
   },
   {
