@@ -9,8 +9,8 @@ import imgFileOrganizer22 from './docs/22.png';
 export const APPS: AppInfo[] = [
   {
     id: '0',
-    name: 'AI/ML Portfolio (This Site)',
-    subtitle: 'Portfolio web app with project filters, modals, and live deployments.',
+    name: 'Portfolio Site (You’re on it)',
+    subtitle: 'This is the website you’re viewing right now.',
     category: Category.Projects,
     icon: imgAimlPortfolio18,
     banner: imgAimlPortfolio18,
