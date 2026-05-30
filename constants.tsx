@@ -8,6 +8,21 @@ import imgFileOrganizer22 from './docs/22.png';
 
 export const APPS: AppInfo[] = [
   {
+    id: '0',
+    name: 'AI/ML Portfolio (This Site)',
+    subtitle: 'Portfolio web app with project filters, modals, and live deployments.',
+    category: Category.Projects,
+    icon: imgAimlPortfolio18,
+    banner: imgAimlPortfolio18,
+    overview: 'A fast, filterable portfolio that presents AI/ML and software projects with short writeups, tech stack, and outcome-focused summaries.',
+    stack: 'Frontend: React + TypeScript\nBuild: Vite\nQuality: ESLint + Vitest\nDeploy: Vercel',
+    outcome: 'Created a recruiter-friendly project catalogue with featured highlights and one-click access to demos and source code.',
+    developer: 'Kyaw Htet',
+    featured: true,
+    website: 'https://kyawhtet.com',
+    repo: 'https://github.com/kyawhtetyang/AI-ML-Portfolio'
+  },
+  {
     id: '1',
     name: 'CloudLanguage (MVP)',
     subtitle: 'Mobile-first language learning MVP for Burmese learners (in progress).',
