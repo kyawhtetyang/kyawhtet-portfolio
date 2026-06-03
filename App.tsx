@@ -811,16 +811,51 @@ const App: React.FC = () => {
       </main>
 
       {/* Mobile Navigation - Only visible on small screens */}
-      <nav className="md:hidden fixed bottom-0 inset-x-0 h-16 glass border-t border-black/5 z-50 flex items-center justify-between px-3">
-        {mobileNavItems.map((item) => (
-          <button
-            key={item.category}
-            onClick={() => setSelectedCategory(item.category)}
-            className={`p-2 rounded-full ${selectedCategory === item.category ? 'text-[#fa233b]' : 'text-gray-400'}`}
-          >
-            {item.renderIcon('w-6 h-6')}
-          </button>
-        ))}
+      <nav
+        className={`md:hidden fixed bottom-0 inset-x-0 z-50 backdrop-blur ${
+          isDark
+            ? 'border-t border-white/10 bg-[#111315]/90'
+            : 'border-t border-black/5 bg-white/90'
+        }`}
+      >
+        <div
+          className="grid gap-1 px-2 pt-1 pb-[max(0.35rem,env(safe-area-inset-bottom))]"
+          style={{ gridTemplateColumns: `repeat(${mobileNavItems.length}, minmax(0, 1fr))` }}
+        >
+          {mobileNavItems.map((item) => {
+            const isActive = selectedCategory === item.category;
+            return (
+              <button
+                key={item.category}
+                onClick={() => setSelectedCategory(item.category)}
+                aria-label={item.category}
+                title={item.category}
+                className={`flex h-14 flex-col items-center justify-center gap-1 rounded-xl transition-all ${
+                  isActive
+                    ? 'text-[#fa233b] bg-[#fa233b]/12'
+                    : isDark
+                      ? 'text-gray-500 hover:bg-white/5'
+                      : 'text-gray-400 hover:bg-black/5'
+                }`}
+              >
+                <span className="flex items-center justify-center">
+                  {item.renderIcon('h-[22px] w-[22px]')}
+                </span>
+                <span
+                  className={`text-[11px] font-semibold leading-none ${
+                    isActive
+                      ? 'text-[#fa233b]'
+                      : isDark
+                        ? 'text-gray-400'
+                        : 'text-gray-500'
+                  }`}
+                >
+                  {item.category}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </nav>
 
       {isContactModalOpen && (
