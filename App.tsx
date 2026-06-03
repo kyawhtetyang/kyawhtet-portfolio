@@ -136,7 +136,6 @@ const App: React.FC = () => {
     linkedin: 'https://linkedin.com/in/kyawhtetyang',
     github: 'https://github.com/kyawhtetyang',
     resume: 'https://u.pcloud.link/publink/show?code=kZze2M5ZWWU8Wv1GxPfEbPPJLkhDuB6yEt7k',
-    phone: '+95 388337',
     location: 'Yangon, Myanmar'
   };
 
@@ -542,10 +541,6 @@ const App: React.FC = () => {
                   <li className="flex items-start gap-4 border-b border-black/10 pb-2">
                     <span className="w-16 shrink-0 pt-0.5 text-[#6e6e73]">Address</span>
                     <span className="min-w-0 flex-1 text-right font-semibold leading-snug text-[#1d1d1f] break-words">{profile.location}</span>
-                  </li>
-                  <li className="flex items-start gap-4 border-b border-black/10 pb-2">
-                    <span className="w-16 shrink-0 pt-0.5 text-[#6e6e73]">Phone</span>
-                    <span className="min-w-0 flex-1 text-right font-semibold leading-snug text-[#1d1d1f] break-words">{profile.phone}</span>
                   </li>
                   <li className="flex items-start gap-4 border-b border-black/10 pb-2">
                     <span className="w-16 shrink-0 pt-0.5 text-[#6e6e73]">Status</span>
