@@ -54,7 +54,7 @@ For production on Vercel, also set:
 
 ## Notes
 
-- Projects include filters: `Featured`, `All`, `AI/ML`, `Python`, `Web App`, `Desktop App`.
+- Projects include filters: `Featured`, `All`, `AI/ML`, `Web`, `Desktop`, `Backend`.
 - Project cards open a modal with: `Overview`, `Tech Stack`, `Outcome`.
 - Modal buttons:
   - `Open` for live demo/website (when available)

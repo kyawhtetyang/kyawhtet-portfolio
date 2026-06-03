@@ -7,11 +7,14 @@ export enum Category {
   Settings = 'Settings'
 }
 
+export type ProjectDomain = 'AI/ML' | 'Web' | 'Desktop' | 'Backend';
+
 export interface AppInfo {
   id: string;
   name: string;
   subtitle: string;
   category: Category;
+  domain: ProjectDomain;
   icon: string;
   banner: string;
   overview: string;
