@@ -140,6 +140,7 @@ const App: React.FC = () => {
   };
 
   const formspreeEndpoint = appConfig.formspreeEndpoint;
+  const isContactFormConfigured = Boolean(formspreeEndpoint && !formspreeEndpoint.includes('your_form_id'));
 
   const chatSeedMessages = [
     {
@@ -338,10 +339,10 @@ const App: React.FC = () => {
   const handleContactSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!formspreeEndpoint || formspreeEndpoint.includes('your_form_id')) {
+    if (!isContactFormConfigured) {
       setContactSubmitState({
         type: 'error',
-        message: 'Form is not configured yet. Set VITE_FORMSPREE_ENDPOINT in .env.local.'
+        message: 'Contact form is not live yet. Please use the email button for now.'
       });
       return;
     }
@@ -893,6 +894,15 @@ const App: React.FC = () => {
             </div>
             <div className="flex-1 overflow-y-auto p-6 md:p-10 text-left">
               <form onSubmit={handleContactSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {!isContactFormConfigured && (
+                  <div className={`md:col-span-2 rounded-2xl border px-4 py-3 text-sm ${
+                    isDark
+                      ? 'border-amber-400/30 bg-amber-400/10 text-amber-100'
+                      : 'border-amber-200 bg-amber-50 text-amber-900'
+                  }`}>
+                    Contact form is not configured yet. Please use the email button below and I will reply directly.
+                  </div>
+                )}
                 <label className="flex flex-col gap-2">
                   <span className={`text-sm font-medium ${isDark ? 'text-gray-100' : 'text-[#1d1d1f]'}`}>Name</span>
                   <input type="text" value={contactName} onChange={(e) => { setContactName(e.target.value); if (contactSubmitState.type !== 'idle') setContactSubmitState({ type: 'idle', message: '' }); }} placeholder="Your name" className={`rounded-lg px-4 py-2.5 text-sm outline-none ${
@@ -932,8 +942,20 @@ const App: React.FC = () => {
                   }`} />
                 </label>
                 <div className="md:col-span-2 flex items-center justify-between gap-4 flex-wrap">
-                  <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-[#6e6e73]'}`}>For urgent requests, email me directly.</p>
-                  <button type="submit" disabled={isSubmittingContact} className="inline-flex items-center rounded-lg bg-[#fa233b] text-white text-sm font-semibold px-5 py-2.5 hover:bg-[#d91e33] transition-colors disabled:opacity-60 disabled:cursor-not-allowed">{isSubmittingContact ? 'Sending...' : 'Send Message'}</button>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <p className={`text-xs ${isDark ? 'text-gray-400' : 'text-[#6e6e73]'}`}>For urgent requests, email me directly.</p>
+                    <a
+                      href={`mailto:${profile.email}`}
+                      className={`inline-flex items-center rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+                        isDark
+                          ? 'bg-white/8 text-white hover:bg-white/12'
+                          : 'bg-black/5 text-[#1d1d1f] hover:bg-black/10'
+                      }`}
+                    >
+                      Email Me
+                    </a>
+                  </div>
+                  <button type="submit" disabled={isSubmittingContact || !isContactFormConfigured} className="inline-flex items-center rounded-lg bg-[#fa233b] text-white text-sm font-semibold px-5 py-2.5 hover:bg-[#d91e33] transition-colors disabled:opacity-60 disabled:cursor-not-allowed">{isSubmittingContact ? 'Sending...' : 'Send Message'}</button>
                 </div>
                 {contactSubmitState.type !== 'idle' && (
                   <p className={`md:col-span-2 text-sm ${contactSubmitState.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>

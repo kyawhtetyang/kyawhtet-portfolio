@@ -63,7 +63,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   theme,
   userSettings,
   visibleCategories,
-}) => (
+}) => {
+  const isContactFormConfigured = Boolean(formspreeEndpoint && !formspreeEndpoint.includes('your_form_id'));
+
+  return (
   <div className="pt-16 md:pt-20 space-y-8 pb-20">
     <section className="grid grid-cols-1 xl:grid-cols-12 gap-6">
       <div className="xl:col-span-7 space-y-4">
@@ -130,7 +133,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </li>
             <li className="flex items-center justify-between gap-4">
               <span>Contact Form</span>
-              <span className="font-semibold">{formspreeEndpoint ? 'Configured' : 'Missing'}</span>
+              <span className="font-semibold">{isContactFormConfigured ? 'Configured' : 'Missing'}</span>
             </li>
           </ul>
         </div>
@@ -147,4 +150,5 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
       </div>
     </section>
   </div>
-);
+  );
+};
