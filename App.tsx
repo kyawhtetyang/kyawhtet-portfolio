@@ -158,12 +158,12 @@ const App: React.FC = () => {
   ];
 
   const portfolioSkills = [
-    'AI/ML Engineering',
-    'LLM Applications',
-    'Python + FastAPI',
+    'FastAPI + Python',
     'React + TypeScript',
-    'MVP Build',
-    'MLOps + Deploy'
+    'RAG + Retrieval',
+    'Applied AI/ML',
+    'Automation Systems',
+    'Deploy + Ship'
   ];
 
   const formatPhotoTitle = (slug: string) =>
@@ -237,18 +237,18 @@ const App: React.FC = () => {
   const featuredWork = [
     {
       title: 'CloudLanguage (MVP)',
-      summary: 'Mobile-first language learning MVP for Burmese learners with lesson loop, progress tracking, and review flow in build.',
+      summary: 'Mobile-first language learning product for Burmese learners with lesson flow, progress tracking, review loops, and live VPS deployment.',
       stack: 'React · TypeScript · FastAPI · Lesson JSON'
+    },
+    {
+      title: 'RAG Knowledge Assistant',
+      summary: 'Deployment-ready RAG assistant with ingestion, retrieval, citations, evaluation endpoints, and verified public VPS delivery.',
+      stack: 'FastAPI · PostgreSQL/pgvector · Docker · nginx'
     },
     {
       title: 'Fake News Detector (BiLSTM)',
       summary: 'End-to-end fake news detection pipeline with preprocessing, BiLSTM training, Flask prediction interface, and Docker deployment support.',
       stack: 'Python · TensorFlow · BiLSTM · Flask'
-    },
-    {
-      title: 'Music App (UI)',
-      summary: 'Apple-inspired music interface with refined navigation, interactions, and visual hierarchy for a premium listening experience.',
-      stack: 'React · TypeScript · UI Engineering'
     }
   ];
 
@@ -505,11 +505,11 @@ const App: React.FC = () => {
               <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
               <div className="xl:col-span-8 bg-white border border-black/10 rounded-2xl p-6 md:p-7">
                 <h3 className="text-base font-bold text-gray-900 leading-tight">
-                  Kyaw Htet | AI/ML Engineer & Product Builder
+                  Kyaw Htet | Full-Stack Python Engineer with Applied AI/ML Experience
                 </h3>
                 <p className="mt-4 text-sm text-gray-600 max-w-3xl">
-                  I combine MBA-level business understanding with hands-on engineering experience in Python, automation, NLP, and machine learning.
-                  This portfolio highlights practical projects, technical strengths, and ways to collaborate.
+                  I build practical software products end to end, from FastAPI backends and React frontends to applied AI/ML systems, retrieval workflows, and VPS deployment.
+                  This portfolio highlights the projects that best show product thinking, engineering ownership, and real-world delivery.
                 </p>
                 <div className="mt-5 flex flex-wrap gap-3">
                   <a href={profile.linkedin} target="_blank" rel="noreferrer" className="inline-flex items-center rounded-xl bg-white border border-black/10 text-[#1d1d1f] text-sm font-semibold px-4 py-2 hover:bg-gray-50 transition-colors">
@@ -536,7 +536,7 @@ const App: React.FC = () => {
                   <li className="flex items-start gap-4 border-b border-black/10 pb-2">
                     <span className="w-16 shrink-0 pt-0.5 text-[#6e6e73]">Role</span>
                     <span className="min-w-0 flex-1 text-right font-semibold leading-snug text-[#1d1d1f] break-words">
-                      Full-Stack Python Developer (FastAPI/React) + Applied ML
+                      Full-Stack Python Engineer + Applied AI/ML
                     </span>
                   </li>
                   <li className="flex items-start gap-4 border-b border-black/10 pb-2">
@@ -594,7 +594,7 @@ const App: React.FC = () => {
               <p className="text-xs font-bold uppercase tracking-wider text-[#fa233b] mb-3">Contact</p>
               <h3 className="text-base font-bold text-gray-900">Want to work together?</h3>
               <p className="mt-3 text-sm text-gray-600">
-                Send your project brief directly from here.
+                If you need a web product, internal tool, automation workflow, or applied AI feature, send the brief directly from here.
               </p>
               <div className="mt-5 flex flex-wrap gap-3">
                 <button

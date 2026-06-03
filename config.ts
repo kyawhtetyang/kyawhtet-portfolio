@@ -1,9 +1,12 @@
-const readFlag = (value: string | undefined) => value?.trim().toLowerCase() === 'true';
+const readFlag = (value: string | undefined, defaultValue = false) => {
+  if (value == null || value.trim() === '') return defaultValue;
+  return value.trim().toLowerCase() === 'true';
+};
 
 export const appConfig = {
   formspreeEndpoint: (import.meta.env.VITE_FORMSPREE_ENDPOINT as string | undefined)?.trim() ?? '',
   features: {
-    blog: readFlag(import.meta.env.VITE_ENABLE_BLOG as string | undefined),
+    blog: readFlag(import.meta.env.VITE_ENABLE_BLOG as string | undefined, true),
     photo: readFlag(import.meta.env.VITE_ENABLE_PHOTO as string | undefined),
     chat: readFlag(import.meta.env.VITE_ENABLE_CHAT as string | undefined),
   },
