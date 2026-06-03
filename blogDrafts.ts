@@ -3,6 +3,7 @@ import fileOrganizerPro20260208 from './content/blog/file-organizer-pro-2026-02-
 import aimlPortfolioV220260210 from './content/blog/aiml-portfolio-v2-2026-02-10.md?raw';
 import cloudLanguageRebrand20260216 from './content/blog/cloudlanguage-rebrand-2026-02-16.md?raw';
 import aiNotesOs20260318 from './content/blog/ai-notes-os-2026-03-18.md?raw';
+import ragKnowledgeAssistant20260603 from './content/blog/rag-knowledge-assistant-2026-06-03.md?raw';
 import fakeNewsBilstm20251110 from './content/blog/fakenews-bilstm-2025-11-10.md?raw';
 import movieRecommenderHybrid20251110 from './content/blog/movie-recommender-hybrid-2025-11-10.md?raw';
 import articleAnalyzerSbert20251110 from './content/blog/article-analyzer-sbert-2025-11-10.md?raw';
@@ -24,6 +25,7 @@ import imageClassifierCnnThumbnail from './docs/blog_thumbnails/image-classifier
 import mediaDownloaderThumbnail from './docs/blog_thumbnails/media-downloader.jpg';
 import movieRecommenderThumbnail from './docs/blog_thumbnails/movie-recommender.jpg';
 import musicAppThumbnail from './docs/blog_thumbnails/music-app.jpg';
+import ragKnowledgeAssistantThumbnail from './docs/blog_thumbnails/rag-knowledge-assistant.jpg';
 
 export type BlogDraft = {
   title: string;
@@ -35,6 +37,14 @@ export type BlogDraft = {
 };
 
 export const BLOG_DRAFTS: BlogDraft[] = [
+  {
+    title: 'RAG Knowledge Assistant - Learning Retrieval End to End',
+    status: 'Project Diary',
+    summary: 'Built a deployable RAG system to understand chunking, embeddings, retrieval, citations, evals, and VPS delivery step by step.',
+    updated: '2026-06-03',
+    content: ragKnowledgeAssistant20260603,
+    thumbnail: ragKnowledgeAssistantThumbnail
+  },
   {
     title: 'AI + Human Collaboration OS for Notes',
     status: 'Project Diary',
