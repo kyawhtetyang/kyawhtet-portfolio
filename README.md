@@ -60,4 +60,4 @@ For production on Vercel, also set:
   - `Open` for live demo/website (when available)
   - `GitHub` for source code
   - `Download` for direct installer (when available)
-- Contact is handled via a modal from the Discover page (no separate Contact tab).
+- Contact is handled via a modal from the Home page (no separate Contact tab).

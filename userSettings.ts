@@ -63,7 +63,6 @@ export const getVisibleCategories = (settings: UserSettings): Category[] => {
     categories.push(Category.Chat);
   }
 
-  categories.push(Category.Settings);
   return categories;
 };
 

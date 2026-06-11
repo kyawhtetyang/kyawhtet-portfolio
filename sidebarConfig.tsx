@@ -19,7 +19,6 @@ type SidebarConfigOptions = {
   chatVisible: boolean;
   photoBadge?: string;
   photoVisible: boolean;
-  settingsBadge?: string;
 };
 
 export const SettingsNavIcon: React.FC<{ className?: string }> = ({ className }) => (
@@ -74,7 +73,6 @@ export const buildSidebarSections = ({
   chatVisible,
   photoBadge,
   photoVisible,
-  settingsBadge,
 }: SidebarConfigOptions): NavSectionConfig[] => [
   {
     title: 'Explore',
@@ -89,12 +87,6 @@ export const buildSidebarSections = ({
       ...(blogVisible ? [{ category: Category.Blog, badge: blogBadge, renderIcon: BLOG_ICON }] : []),
       ...(photoVisible ? [{ category: Category.Photo, badge: photoBadge, renderIcon: PHOTO_ICON }] : []),
       ...(chatVisible ? [{ category: Category.Chat, badge: chatBadge, renderIcon: CHAT_ICON }] : []),
-    ],
-  },
-  {
-    title: 'Personal',
-    items: [
-      { category: Category.Settings, badge: settingsBadge, renderIcon: (className) => <SettingsNavIcon className={className} /> },
     ],
   },
 ];

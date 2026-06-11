@@ -1,9 +1,9 @@
 export enum Category {
-  Discover = 'Discover',
+  Discover = 'Home',
   Projects = 'Projects',
   Blog = 'Blog',
-  Photo = 'Books',
-  Chat = 'Chat',
+  Photo = 'Library',
+  Chat = 'Ask',
   Settings = 'Settings'
 }
 
