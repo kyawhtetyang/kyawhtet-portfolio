@@ -8,6 +8,7 @@ import { AppCard } from './components/AppCard';
 import { AppListItem } from './components/AppListItem';
 import { AppDetailModal } from './components/AppDetailModal';
 import { SettingsView } from './components/SettingsView';
+import { AskView } from './components/AskView';
 import profilePhoto from './docs/01_AIML_Portfolio.png';
 import { BLOG_DRAFTS, BlogDraft } from './blogDrafts';
 import { PHOTO_METADATA } from './booksMetadata';
@@ -141,21 +142,6 @@ const App: React.FC = () => {
 
   const formspreeEndpoint = appConfig.formspreeEndpoint;
   const isContactFormConfigured = Boolean(formspreeEndpoint && !formspreeEndpoint.includes('your_form_id'));
-
-  const chatSeedMessages = [
-    {
-      role: 'assistant',
-      text: 'Hi, I am Kyaw Htet’s assistant. Ask me about AI/ML projects, web apps, or collaboration.'
-    },
-    {
-      role: 'user',
-      text: 'I want to build an AI-powered dashboard for my startup.'
-    },
-    {
-      role: 'assistant',
-      text: 'Great. Share your data sources, target users, and launch timeline. I can suggest a build plan and tech stack.'
-    }
-  ];
 
   const portfolioSkills = [
     'FastAPI + Python',
@@ -659,46 +645,7 @@ const App: React.FC = () => {
             </section>
           </div>
         ) : isChatPage ? (
-          <div className="pt-16 md:pt-20 pb-36 lg:pb-28">
-            <section className="h-[68vh] min-h-[520px] flex flex-col overflow-hidden">
-              <div className="flex-1 overflow-y-auto p-0 pb-28 space-y-4">
-                {chatSeedMessages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div
-                      className={`max-w-[85%] md:max-w-[70%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                        message.role === 'user'
-                          ? 'bg-[#fa233b] text-white'
-                          : 'bg-white border border-black/10 text-[#1d1d1f]'
-                      }`}
-                    >
-                      {message.text}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            <div className={`fixed left-0 right-0 bottom-16 md:bottom-0 md:left-20 ${compactSidebar ? 'lg:left-20' : 'lg:left-64'} z-40 px-4 md:px-8 lg:px-12 pb-3 md:pb-4`}>
-              <div className="border-t border-black/10 pt-3 md:pt-4">
-                <div className="flex items-end gap-3">
-                  <textarea
-                    rows={1}
-                    placeholder="Type your message..."
-                    className="flex-1 bg-white border border-black/10 rounded-2xl px-4 py-3 text-sm outline-none resize-none"
-                  />
-                  <button
-                    type="button"
-                    className="shrink-0 rounded-xl bg-[#fa233b] text-white text-sm font-semibold px-4 py-2.5 hover:bg-[#d91e33] transition-colors"
-                  >
-                    Send
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <AskView />
         ) : isBlogPage ? (
           <div className="pt-16 md:pt-20 space-y-8 pb-20">
             <section>

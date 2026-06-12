@@ -187,6 +187,22 @@ export const APPS: AppInfo[] = [
     repo: 'https://github.com/kyawhtetyang/RAG_Knowledge_Assistant'
   },
   {
+    id: '10.6',
+    name: 'ResearchFlow AI',
+    subtitle: 'Agentic research workflow platform with stored jobs, sources, reports, and live portfolio integration.',
+    category: Category.Projects,
+    domain: 'AI/ML',
+    icon: imgGroup19,
+    banner: imgGroup19,
+    overview: 'A multi-step AI research system that extends beyond retrieval QA into planning, evidence collection, analysis, reporting, and workflow traces. It also powers the Ask experience inside the AI/ML portfolio.',
+    stack: 'Frontend: Standalone UI + AI/ML Portfolio Ask integration\nBackend: FastAPI\nData: PostgreSQL\nInfra: Docker Compose\nFocus: agent orchestration, reports, sources, eval/readiness workflow',
+    outcome: 'Shipped a stronger AI Engineer proof project that demonstrates research orchestration, stored outputs, and live integration with the portfolio experience.',
+    developer: 'Kyaw Htet',
+    featured: true,
+    website: 'https://researchflow.kyawhtet.com',
+    repo: 'https://github.com/kyawhtetyang/ResearchFlow_AI'
+  },
+  {
     id: '11',
     name: 'Music App',
     subtitle: 'Apple-inspired music interface and interactions.',
