@@ -95,7 +95,9 @@ export const AskView: React.FC<AskViewProps> = ({ theme }) => {
             <div
               className={`rounded-xl text-[15px] whitespace-pre-wrap break-words ${
                 message.role === 'user'
-                  ? 'bg-[#ef3e46] px-5 py-3 leading-7 text-white shadow-[0_14px_36px_rgba(239,62,70,0.14)]'
+                  ? isDark
+                    ? 'bg-white/[0.08] px-5 py-3 leading-7 text-white shadow-[0_14px_36px_rgba(0,0,0,0.18)]'
+                    : 'bg-[#e5e7eb] px-5 py-3 leading-7 text-[#1d1d1f] shadow-[0_12px_28px_rgba(15,23,42,0.08)]'
                   : isDark
                     ? 'bg-transparent px-0 py-0 leading-8 text-[#f3f4f6]'
                     : 'bg-transparent px-0 py-0 leading-8 text-[#1d1d1f]'
@@ -157,7 +159,7 @@ export const AskView: React.FC<AskViewProps> = ({ theme }) => {
   );
 
   return (
-    <div className={hasMessages ? 'pb-32 md:pb-28' : 'pb-0'}>
+    <div className={`${hasMessages ? 'pb-32 md:pb-28' : 'pb-0'} -mx-4 md:-mx-6 lg:-mx-6`}>
       <section className="flex h-[calc(100vh-9.5rem)] min-h-0 flex-col overflow-hidden">
         <div
           ref={messagesContainerRef}
