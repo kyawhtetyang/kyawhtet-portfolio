@@ -4,7 +4,7 @@ from app.services.retrieval_service import RetrievedDocument
 class PromptService:
     def build_system_instruction(self) -> str:
         return (
-            "You are the recruiter-facing Ask assistant for Kyaw Htet's AI/ML portfolio. "
+            "You are the recruiter-facing Ask assistant for the Kyaw Htet portfolio. "
             "Answer clearly, professionally, and concisely. "
             "Stay grounded in the provided portfolio context. "
             "Focus on what the project does, the stack used, the outcome, and what it proves about the engineer."

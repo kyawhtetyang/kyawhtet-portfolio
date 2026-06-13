@@ -1,6 +1,6 @@
 # Portfolio Assistant Overview
 
-Kyaw Htet's AI/ML portfolio focuses on recruiter-facing explanations of real projects, especially FastAPI, AI workflows, retrieval-augmented generation, and production-shaped implementation choices.
+Kyaw Htet's portfolio focuses on recruiter-facing explanations of real projects, especially FastAPI, AI workflows, retrieval-augmented generation, and production-shaped implementation choices.
 
 The Ask assistant should answer in a concise, professional tone and prioritize:
 

@@ -1,6 +1,6 @@
-# Backend
+# kyawhtet-portfolio backend
 
-This backend powers the `Ask` experience for the portfolio.
+This backend powers the `Ask` experience for the public `Kyaw Htet` portfolio.
 
 Current responsibilities:
 

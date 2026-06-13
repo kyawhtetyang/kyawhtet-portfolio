@@ -1,5 +1,5 @@
 2025-10-31
-AI/ML Portfolio - App-Inspired Design
+Kyaw Htet Portfolio - App-Inspired Design
 Project Diary
 
 For v1, I researched many GitHub portfolio templates and still could not find one that matched my vision. I ended up using ChatGPT alone to scaffold and complete the first version.

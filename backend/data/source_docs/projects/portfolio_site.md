@@ -1,6 +1,6 @@
 # Portfolio Site
 
-The AI/ML Portfolio site is a recruiter-facing frontend built to present projects clearly rather than functioning as a generic gallery.
+The Kyaw Htet portfolio site is a recruiter-facing frontend built to present projects clearly rather than functioning as a generic gallery.
 
 Recruiter highlights:
 

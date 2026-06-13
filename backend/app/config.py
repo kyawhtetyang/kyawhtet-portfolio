@@ -17,7 +17,7 @@ def _read_env_list(value: str | None, default: list[str]) -> list[str]:
 
 @dataclass(frozen=True)
 class Settings:
-    app_name: str = "AI/ML Portfolio Backend"
+    app_name: str = "Kyaw Htet Portfolio Backend"
     app_version: str = "0.1.0"
     model_provider: str = os.getenv("MODEL_PROVIDER", "gemini")
     gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-3.5-flash")

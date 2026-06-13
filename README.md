@@ -1,6 +1,6 @@
-# AI/ML Portfolio
+# kyawhtet-portfolio
 
-This project is organized as a clean full-stack parent folder under `v0/`.
+This repository contains the `kyawhtet-portfolio` project, the full-stack codebase behind the public `Kyaw Htet` portfolio site.
 
 ## Structure
 
@@ -20,7 +20,7 @@ v0/
 
 ## Frontend
 
-Run the portfolio app from `frontend/`.
+Run the public portfolio app from `frontend/`.
 
 ```bash
 cd frontend

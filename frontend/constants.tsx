@@ -195,7 +195,7 @@ export const APPS: AppInfo[] = [
     icon: imgGroup19,
     banner: imgGroup19,
     overview: 'A multi-step AI research system that extends beyond retrieval QA into planning, evidence collection, analysis, reporting, and workflow traces. It also powers the Ask experience inside the AI/ML portfolio.',
-    stack: 'Frontend: Standalone UI + AI/ML Portfolio Ask integration\nBackend: FastAPI\nData: PostgreSQL\nInfra: Docker Compose\nFocus: agent orchestration, reports, sources, eval/readiness workflow',
+    stack: 'Frontend: Standalone UI + Kyaw Htet portfolio Ask integration\nBackend: FastAPI\nData: PostgreSQL\nInfra: Docker Compose\nFocus: agent orchestration, reports, sources, eval/readiness workflow',
     outcome: 'Shipped a stronger AI Engineer proof project that demonstrates research orchestration, stored outputs, and live integration with the portfolio experience.',
     developer: 'Kyaw Htet',
     featured: true,
