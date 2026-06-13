@@ -1,63 +1,39 @@
-# Kyaw Htet Portfolio (v1)
+# AI/ML Portfolio
 
-Personal portfolio web app showcasing AI/ML, Python, desktop, and web projects.
+This project is organized as a clean full-stack parent folder under `v0/`.
 
-## Tech Stack
+## Structure
 
-- React + TypeScript
-- Vite
-- Utility-first styling
+```text
+v0/
+├── frontend/         # React + Vite portfolio UI
+├── backend/          # FastAPI + retrieval + LLM integration
+├── docker-compose.yml
+├── .env.example
+└── README.md
+```
 
-## Run Locally
+## Current Status
 
-Prerequisite: Node.js 18+
+- `frontend/` contains the existing portfolio app and Ask UI.
+- `backend/` is scaffolded for the upcoming chat, chunk retrieval, and LLM connection work.
+
+## Frontend
+
+Run the portfolio app from `frontend/`.
 
 ```bash
+cd frontend
 npm install
 npm run dev
-```
-
-## Build
-
-```bash
-npm run build
-```
-
-## Quality Checks
-
-```bash
-npm run lint
-npm run test
 npm run check
 ```
 
-## Contact Form (Formspree)
+## Backend Direction
 
-The `Send Message` button posts directly to Formspree.
+Planned backend responsibilities:
 
-1. Create a form in Formspree and copy your endpoint URL.
-2. Set the endpoint in `.env.local`:
-
-```bash
-VITE_FORMSPREE_ENDPOINT=https://formspree.io/f/your_form_id
-```
-
-3. Restart dev server after editing env vars.
-
-## Deployment
-
-Recommended: deploy with Vercel from `main`.
-
-For production on Vercel, also set:
-
-- `VITE_FORMSPREE_ENDPOINT`
-
-## Notes
-
-- Projects include filters: `Featured`, `All`, `AI/ML`, `Web`, `Desktop`, `Backend`.
-- Project cards open a modal with: `Overview`, `Tech Stack`, `Outcome`.
-- Modal buttons:
-  - `Open` for live demo/website (when available)
-  - `GitHub` for source code
-  - `Download` for direct installer (when available)
-- Contact is handled via a modal from the Home page (no separate Contact tab).
+- load and chunk portfolio source documents
+- retrieve relevant context for recruiter questions
+- call Gemini or another LLM provider
+- return chat-style answers to the Ask UI

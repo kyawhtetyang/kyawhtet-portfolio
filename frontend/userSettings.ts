@@ -19,7 +19,7 @@ export const DEFAULT_USER_SETTINGS: UserSettings = {
   compactGrid: false,
   rememberLastTab: true,
   preferCompactSidebar: false,
-  showBetaFeatures: true,
+  showBetaFeatures: false,
 };
 
 export const readUserSettings = (): UserSettings => {
@@ -55,12 +55,16 @@ export const getVisibleCategories = (settings: UserSettings): Category[] => {
     categories.push(Category.Blog);
   }
 
-  if (appConfig.features.photo && (!appConfig.beta.photo || settings.showBetaFeatures)) {
-    categories.push(Category.Photo);
+  if (appConfig.features.library && (!appConfig.beta.library || settings.showBetaFeatures)) {
+    categories.push(Category.Library);
   }
 
-  if (appConfig.features.chat && (!appConfig.beta.chat || settings.showBetaFeatures)) {
-    categories.push(Category.Chat);
+  if (appConfig.features.ask && (!appConfig.beta.ask || settings.showBetaFeatures)) {
+    categories.push(Category.Ask);
+  }
+
+  if (appConfig.features.settings && (!appConfig.beta.settings || settings.showBetaFeatures)) {
+    categories.push(Category.Settings);
   }
 
   return categories;

@@ -124,12 +124,16 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
               <span className="font-semibold">{appConfig.features.blog ? (appConfig.beta.blog ? 'Enabled (Beta)' : 'Enabled') : 'Disabled'}</span>
             </li>
             <li className="flex items-center justify-between gap-4 border-b border-black/10 pb-3">
-              <span>Books</span>
-              <span className="font-semibold">{appConfig.features.photo ? (appConfig.beta.photo ? 'Enabled (Beta)' : 'Enabled') : 'Disabled'}</span>
+              <span>Library</span>
+              <span className="font-semibold">{appConfig.features.library ? (appConfig.beta.library ? 'Enabled (Beta)' : 'Enabled') : 'Disabled'}</span>
             </li>
             <li className="flex items-center justify-between gap-4 border-b border-black/10 pb-3">
-              <span>Chat</span>
-              <span className="font-semibold">{appConfig.features.chat ? (appConfig.beta.chat ? 'Enabled (Beta)' : 'Enabled') : 'Disabled'}</span>
+              <span>Ask</span>
+              <span className="font-semibold">{appConfig.features.ask ? (appConfig.beta.ask ? 'Enabled (Beta)' : 'Enabled') : 'Disabled'}</span>
+            </li>
+            <li className="flex items-center justify-between gap-4 border-b border-black/10 pb-3">
+              <span>Settings</span>
+              <span className="font-semibold">{appConfig.features.settings ? (appConfig.beta.settings ? 'Enabled (Beta)' : 'Enabled') : 'Disabled'}</span>
             </li>
             <li className="flex items-center justify-between gap-4">
               <span>Contact Form</span>

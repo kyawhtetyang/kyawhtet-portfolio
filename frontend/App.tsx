@@ -24,9 +24,9 @@ import {
 } from './userSettings';
 
 type BlogCategory = 'All';
-type PhotoCategory = 'all' | string;
+type LibraryCategory = 'all' | string;
 
-const PHOTO_MODULES = import.meta.glob('./docs/photo/*.jpg', { eager: true, import: 'default' }) as Record<string, string>;
+const LIBRARY_MODULES = import.meta.glob('./docs/photo/*.jpg', { eager: true, import: 'default' }) as Record<string, string>;
 
 const SidebarItem: React.FC<{ 
   category: Category; 
@@ -70,7 +70,7 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<ProjectFilter>('Featured');
   const [selectedBlogCategory, setSelectedBlogCategory] = useState<BlogCategory>('All');
-  const [selectedPhotoCategory, setSelectedPhotoCategory] = useState<PhotoCategory>('all');
+  const [selectedLibraryCategory, setSelectedLibraryCategory] = useState<LibraryCategory>('all');
   const [selectedApp, setSelectedApp] = useState<AppInfo | null>(null);
   const [selectedBlogDraft, setSelectedBlogDraft] = useState<BlogDraft | null>(null);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -86,40 +86,43 @@ const App: React.FC = () => {
   const theme = userSettings.theme;
   const visibleCategories = getVisibleCategories(userSettings);
   const blogVisible = visibleCategories.includes(Category.Blog);
-  const photoVisible = visibleCategories.includes(Category.Photo);
-  const chatVisible = visibleCategories.includes(Category.Chat);
+  const libraryVisible = visibleCategories.includes(Category.Library);
+  const chatVisible = visibleCategories.includes(Category.Ask);
+  const settingsVisible = visibleCategories.includes(Category.Settings);
   const blogBadge = appConfig.beta.blog ? 'Beta' : undefined;
-  const photoBadge = appConfig.beta.photo ? 'Beta' : undefined;
-  const chatBadge = appConfig.beta.chat ? 'Beta' : undefined;
-  const settingsBadge = 'Beta';
+  const libraryBadge = appConfig.beta.library ? 'Beta' : undefined;
+  const chatBadge = appConfig.beta.ask ? 'Beta' : undefined;
+  const settingsBadge = appConfig.beta.settings ? 'Beta' : undefined;
   const sidebarSections = useMemo(
     () =>
       buildSidebarSections({
         blogBadge,
         blogVisible,
+        libraryBadge,
+        libraryVisible,
         chatBadge,
         chatVisible,
-        photoBadge,
-        photoVisible,
         settingsBadge,
+        settingsVisible,
       }),
-    [blogBadge, blogVisible, chatBadge, chatVisible, photoBadge, photoVisible, settingsBadge]
+    [blogBadge, blogVisible, libraryBadge, libraryVisible, chatBadge, chatVisible, settingsBadge, settingsVisible]
   );
   const mobileNavItems = useMemo(
     () =>
       buildMobileNavItems({
         blogBadge,
         blogVisible,
+        libraryBadge,
+        libraryVisible,
         chatBadge,
         chatVisible,
-        photoBadge,
-        photoVisible,
         settingsBadge,
+        settingsVisible,
       }),
-    [blogBadge, blogVisible, chatBadge, chatVisible, photoBadge, photoVisible, settingsBadge]
+    [blogBadge, blogVisible, libraryBadge, libraryVisible, chatBadge, chatVisible, settingsBadge, settingsVisible]
   );
   const compactSidebar = userSettings.preferCompactSidebar;
-  const photoGridClass = userSettings.compactGrid
+  const libraryGridClass = userSettings.compactGrid
     ? 'grid grid-cols-3 md:grid-cols-6 lg:grid-cols-7 gap-x-3 sm:gap-x-4 gap-y-5'
     : 'grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-x-4 sm:gap-x-5 gap-y-6';
   const appCardGridClass = userSettings.compactGrid
@@ -127,11 +130,11 @@ const App: React.FC = () => {
     : 'grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-x-4 sm:gap-x-5 gap-y-6';
   const isDark = theme === 'dark';
   const isDiscoverPage = selectedCategory === Category.Discover;
-  const isPhotoPage = photoVisible && selectedCategory === Category.Photo;
-  const isChatPage = chatVisible && selectedCategory === Category.Chat;
+  const isLibraryPage = libraryVisible && selectedCategory === Category.Library;
+  const isChatPage = chatVisible && selectedCategory === Category.Ask;
   const isProjectsPage = selectedCategory === Category.Projects;
   const isBlogPage = selectedCategory === Category.Blog;
-  const isSettingsPage = selectedCategory === Category.Settings;
+  const isSettingsPage = settingsVisible && selectedCategory === Category.Settings;
   const profile = {
     email: 'kyaw.htet.yang@gmail.com',
     linkedin: 'https://linkedin.com/in/kyawhtetyang',
@@ -152,14 +155,14 @@ const App: React.FC = () => {
     'Deploy + Ship'
   ];
 
-  const formatPhotoTitle = (slug: string) =>
+  const formatLibraryTitle = (slug: string) =>
     slug
       .split('_')
       .filter(Boolean)
       .map((word) => word[0]?.toUpperCase() + word.slice(1))
       .join(' ');
 
-  const formatPhotoCategory = (key: string) => {
+  const formatLibraryCategory = (key: string) => {
     if (key === 'cs') return 'CS';
     if (key === 'me') return 'Me';
     if (key === 'other') return 'Other';
@@ -170,8 +173,8 @@ const App: React.FC = () => {
       .join(' ');
   };
 
-  const photoItems = useMemo(() => {
-    return Object.entries(PHOTO_MODULES)
+  const libraryItems = useMemo(() => {
+    return Object.entries(LIBRARY_MODULES)
       .map(([path, src]) => {
         const file = path.split('/').pop() ?? '';
         const base = file.replace(/\.jpg$/i, '');
@@ -189,7 +192,7 @@ const App: React.FC = () => {
           base,
           src,
           category,
-          title: formatPhotoTitle(titleSlug),
+          title: formatLibraryTitle(titleSlug),
           order: metadata?.order ?? Number.MAX_SAFE_INTEGER,
           href: PHOTO_LINKS[base] ?? src,
           linkLabel: PHOTO_LINKS[base] ? 'Open study link' : 'Click to view full size'
@@ -206,19 +209,19 @@ const App: React.FC = () => {
       });
   }, []);
 
-  const photoCategories = useMemo(() => {
-    const keys = new Set(photoItems.map((item) => item.category));
+  const libraryCategories = useMemo(() => {
+    const keys = new Set(libraryItems.map((item) => item.category));
     const sorted = Array.from(keys).sort((a, b) => a.localeCompare(b));
     return [
       { key: 'all', label: 'All' },
-      ...sorted.map((key) => ({ key, label: formatPhotoCategory(key) }))
+      ...sorted.map((key) => ({ key, label: formatLibraryCategory(key) }))
     ];
-  }, [photoItems]);
+  }, [libraryItems]);
 
-  const filteredPhotoItems =
-    selectedPhotoCategory === 'all'
-      ? photoItems
-      : photoItems.filter((photo) => photo.category === selectedPhotoCategory);
+  const filteredLibraryItems =
+    selectedLibraryCategory === 'all'
+      ? libraryItems
+      : libraryItems.filter((item) => item.category === selectedLibraryCategory);
 
   const featuredWork = [
     {
@@ -437,9 +440,9 @@ const App: React.FC = () => {
                 {chatBadge}
               </span>
             )}
-            {isPhotoPage && photoBadge && (
+            {isLibraryPage && libraryBadge && (
               <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#fa233b]/10 text-[#fa233b]">
-                {photoBadge}
+                {libraryBadge}
               </span>
             )}
             {isSettingsPage && (
@@ -451,7 +454,7 @@ const App: React.FC = () => {
           </div>
           
           <div className="flex items-center gap-3">
-            {!isDiscoverPage && !isChatPage && !isBlogPage && !isPhotoPage && !isSettingsPage && (
+            {!isDiscoverPage && !isChatPage && !isBlogPage && !isLibraryPage && !isSettingsPage && (
               <div className="relative">
                 <input
                   type="text"
@@ -598,18 +601,18 @@ const App: React.FC = () => {
             userSettings={userSettings}
             visibleCategories={visibleCategories}
           />
-        ) : isPhotoPage ? (
+        ) : isLibraryPage ? (
           <div className="pt-16 md:pt-20 space-y-8 pb-20">
             <section>
               <div className="mb-6">
                 <div className="flex flex-wrap gap-2">
-                  {photoCategories.map((category) => (
+                  {libraryCategories.map((category) => (
                     <button
                       key={category.key}
                       type="button"
-                      onClick={() => setSelectedPhotoCategory(category.key)}
+                      onClick={() => setSelectedLibraryCategory(category.key)}
                       className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
-                        selectedPhotoCategory === category.key
+                        selectedLibraryCategory === category.key
                           ? 'bg-[#fa233b] text-white'
                           : 'bg-white border border-black/10 text-[#1d1d1f] hover:bg-gray-50'
                       }`}
@@ -619,25 +622,25 @@ const App: React.FC = () => {
                   ))}
                 </div>
               </div>
-              <div className={photoGridClass}>
-                {filteredPhotoItems.map((photo) => (
+              <div className={libraryGridClass}>
+                {filteredLibraryItems.map((item) => (
                   <a
-                    key={photo.id}
-                    href={photo.href}
+                    key={item.id}
+                    href={item.href}
                     target="_blank"
                     rel="noreferrer"
                     className="group w-full max-w-[170px] sm:max-w-[180px] mx-auto"
                   >
                     <div className="aspect-square overflow-hidden rounded-2xl border border-[#D7DEE8] bg-[#F2F4F7] shadow-sm transition-all group-hover:shadow-md group-hover:bg-[#E8EDF3]">
                       <img
-                        src={photo.src}
-                        alt={photo.title}
+                        src={item.src}
+                        alt={item.title}
                         className="w-full h-full object-cover"
                       />
                     </div>
                     <div className="mt-2 text-center">
-                      <h4 className="text-[13px] font-medium text-gray-900 truncate leading-tight">{photo.title}</h4>
-                      <p className="text-[11px] text-gray-500 truncate">{photo.linkLabel}</p>
+                      <h4 className="text-[13px] font-medium text-gray-900 truncate leading-tight">{item.title}</h4>
+                      <p className="text-[11px] text-gray-500 truncate">{item.linkLabel}</p>
                     </div>
                   </a>
                 ))}
@@ -645,7 +648,7 @@ const App: React.FC = () => {
             </section>
           </div>
         ) : isChatPage ? (
-          <AskView />
+          <AskView theme={theme} />
         ) : isBlogPage ? (
           <div className="pt-16 md:pt-20 space-y-8 pb-20">
             <section>
