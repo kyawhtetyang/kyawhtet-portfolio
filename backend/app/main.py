@@ -16,5 +16,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.get("/")
+def root() -> dict[str, str]:
+    return {
+        "status": "ok",
+        "app": settings.app_name,
+        "version": settings.app_version,
+    }
+
+
 app.include_router(health_router)
 app.include_router(chat_router)

@@ -25,7 +25,7 @@ cp .env.example .env
 
 ```bash
 pip install -r requirements.txt
-uvicorn app.main:app --reload
+uvicorn app.main:app
 ```
 
 4. Optional smoke test:
@@ -36,5 +36,6 @@ python scripts/smoke_chat.py
 
 ## Current API
 
+- `GET /`
 - `GET /health`
 - `POST /api/chat`

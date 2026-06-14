@@ -9,7 +9,7 @@ import { AppListItem } from './components/AppListItem';
 import { AppDetailModal } from './components/AppDetailModal';
 import { SettingsView } from './components/SettingsView';
 import { AskView } from './components/AskView';
-import profilePhoto from './docs/01_AIML_Portfolio.png';
+import profilePhoto from './docs/01_KyawHtet_Portfolio.png';
 import { BLOG_DRAFTS, BlogDraft } from './blogDrafts';
 import { PHOTO_METADATA } from './booksMetadata';
 import { PHOTO_LINKS } from './bookLinks';
