@@ -49,7 +49,7 @@ export const readUserSettings = (): UserSettings => {
 const isCategory = (value: string): value is Category => Object.values(Category).includes(value as Category);
 
 export const getVisibleCategories = (settings: UserSettings): Category[] => {
-  const categories: Category[] = [Category.Discover, Category.Projects];
+  const categories: Category[] = [Category.Home, Category.Projects];
 
   if (appConfig.features.blog && (!appConfig.beta.blog || settings.showBetaFeatures)) {
     categories.push(Category.Blog);
@@ -86,5 +86,5 @@ export const getInitialCategory = (): Category => {
   const visibleCategories = getVisibleCategories(settings);
   const storedCategory = settings.rememberLastTab ? readStoredCategory() : null;
 
-  return storedCategory && visibleCategories.includes(storedCategory) ? storedCategory : Category.Discover;
+  return storedCategory && visibleCategories.includes(storedCategory) ? storedCategory : Category.Home;
 };

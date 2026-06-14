@@ -1,5 +1,5 @@
 export enum Category {
-  Discover = 'Home',
+  Home = 'Home',
   Projects = 'Projects',
   Blog = 'Blog',
   Library = 'Library',

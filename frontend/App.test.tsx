@@ -15,7 +15,7 @@ describe('App', () => {
     render(<App />);
 
     const visibleCategories = getVisibleCategories(DEFAULT_USER_SETTINGS);
-    const expectedVisibleLabels = ['Home', 'Projects', ...visibleCategories.filter((category) => category !== Category.Discover)];
+    const expectedVisibleLabels = ['Home', 'Projects', ...visibleCategories.filter((category) => category !== Category.Home)];
     const expectedHiddenLabels = [Category.Blog, Category.Library, Category.Ask].filter(
       (category) => !visibleCategories.includes(category)
     );

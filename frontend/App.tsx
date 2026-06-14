@@ -27,6 +27,25 @@ type BlogCategory = 'All';
 type LibraryCategory = 'all' | string;
 
 const LIBRARY_MODULES = import.meta.glob('./docs/photo/*.jpg', { eager: true, import: 'default' }) as Record<string, string>;
+const CATEGORY_PATHS: Record<Category, string> = {
+  [Category.Home]: '/',
+  [Category.Projects]: '/projects',
+  [Category.Blog]: '/blog',
+  [Category.Library]: '/library',
+  [Category.Ask]: '/ask',
+  [Category.Settings]: '/settings',
+};
+
+const PATH_TO_CATEGORY: Record<string, Category> = {
+  '/': Category.Home,
+  '/home': Category.Home,
+  '/projects': Category.Projects,
+  '/blog': Category.Blog,
+  '/library': Category.Library,
+  '/lib': Category.Library,
+  '/ask': Category.Ask,
+  '/settings': Category.Settings,
+};
 
 const SidebarItem: React.FC<{ 
   category: Category; 
@@ -66,7 +85,10 @@ const SidebarItem: React.FC<{
 
 const App: React.FC = () => {
   const [userSettings, setUserSettings] = useState<UserSettings>(readUserSettings);
-  const [selectedCategory, setSelectedCategory] = useState<Category>(getInitialCategory);
+  const [selectedCategory, setSelectedCategory] = useState<Category>(() => {
+    if (typeof window === 'undefined') return getInitialCategory();
+    return PATH_TO_CATEGORY[window.location.pathname] ?? getInitialCategory();
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProjectFilter, setSelectedProjectFilter] = useState<ProjectFilter>('Featured');
   const [selectedBlogCategory, setSelectedBlogCategory] = useState<BlogCategory>('All');
@@ -129,7 +151,7 @@ const App: React.FC = () => {
     ? 'grid grid-cols-3 md:grid-cols-6 lg:grid-cols-7 gap-x-3 sm:gap-x-4 gap-y-5'
     : 'grid grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-x-4 sm:gap-x-5 gap-y-6';
   const isDark = theme === 'dark';
-  const isDiscoverPage = selectedCategory === Category.Discover;
+  const isHomePage = selectedCategory === Category.Home;
   const isLibraryPage = libraryVisible && selectedCategory === Category.Library;
   const isChatPage = chatVisible && selectedCategory === Category.Ask;
   const isProjectsPage = selectedCategory === Category.Projects;
@@ -277,11 +299,36 @@ const App: React.FC = () => {
     setSelectedApp(app);
   };
 
+  const navigateToCategory = (category: Category) => {
+    if (typeof window !== 'undefined') {
+      const targetPath = CATEGORY_PATHS[category];
+      if (window.location.pathname !== targetPath) {
+        window.history.pushState({}, '', targetPath);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    setSelectedCategory(category);
+  };
+
   useEffect(() => {
     if (!visibleCategories.includes(selectedCategory)) {
-      setSelectedCategory(Category.Discover);
+      if (typeof window !== 'undefined' && window.location.pathname !== CATEGORY_PATHS[Category.Home]) {
+        window.history.replaceState({}, '', CATEGORY_PATHS[Category.Home]);
+      }
+      setSelectedCategory(Category.Home);
     }
   }, [selectedCategory, visibleCategories]);
+
+  useEffect(() => {
+    const onPopState = () => {
+      const category = PATH_TO_CATEGORY[window.location.pathname] ?? Category.Home;
+      setSelectedCategory(category);
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    };
+
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -416,7 +463,7 @@ const App: React.FC = () => {
                     key={item.category}
                     category={item.category}
                     active={selectedCategory === item.category}
-                    onClick={setSelectedCategory}
+                    onClick={navigateToCategory}
                     badge={item.badge}
                     compact={compactSidebar}
                     icon={item.renderIcon('w-5 h-5')}
@@ -454,7 +501,7 @@ const App: React.FC = () => {
           </div>
           
           <div className="flex items-center gap-3">
-            {!isDiscoverPage && !isChatPage && !isBlogPage && !isLibraryPage && !isSettingsPage && (
+            {!isHomePage && !isChatPage && !isBlogPage && !isLibraryPage && !isSettingsPage && (
               <div className="relative">
                 <input
                   type="text"
@@ -488,7 +535,7 @@ const App: React.FC = () => {
           </div>
         </header>
 
-        {isDiscoverPage ? (
+        {isHomePage ? (
           <div className="pt-16 md:pt-20 space-y-8 pb-20">
             <section>
               <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">

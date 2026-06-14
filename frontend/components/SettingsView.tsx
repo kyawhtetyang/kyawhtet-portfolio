@@ -100,7 +100,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         <SettingsToggle
           checked={userSettings.rememberLastTab}
           label="Remember last tab"
-          description="Return to your previous section on reload instead of always starting on Discover."
+          description="Return to your previous section on reload instead of always starting on Home."
           onChange={(checked) => onUpdateSetting('rememberLastTab', checked)}
         />
         <SettingsToggle
