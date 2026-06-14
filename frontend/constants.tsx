@@ -153,8 +153,7 @@ export const APPS: AppInfo[] = [
     developer: 'Kyaw Htet',
     featured: true,
     website: 'https://movie-recommender-hybrid.onrender.com',
-    repo: 'https://github.com/kyawhtetyang/MovieRecommender_Hybrid',
-    demo: 'Backend demo (legacy UI): https://movie-recommender-hybrid.onrender.com — Use demo login: username demo, password demo1234.'
+    repo: 'https://github.com/kyawhtetyang/MovieRecommender_Hybrid'
   },
   {
     id: '10',
@@ -232,6 +231,7 @@ export const APPS: AppInfo[] = [
     featured: true,
     website: 'https://files.kyawhtet.com/',
     repo: 'https://github.com/kyawhtetyang/File_Organizer',
-    downloadUrl: 'https://github.com/kyawhtetyang/File_Organizer/releases/download/v0.2.0/File.Organizer_0.2.0_aarch64.dmg'
+    downloadUrl: 'https://github.com/kyawhtetyang/File_Organizer/releases/download/v0.2.0/File.Organizer_0.2.0_aarch64.dmg',
+    demo: 'http://demofiles.kyawhtet.com/'
   }
 ];

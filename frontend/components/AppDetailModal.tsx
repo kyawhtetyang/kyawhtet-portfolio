@@ -14,6 +14,7 @@ export const AppDetailModal: React.FC<AppDetailModalProps> = ({ app, onClose }) 
   const projectUrl = app.website;
   const githubUrl = app.repo;
   const downloadUrl = app.downloadUrl;
+  const demoUrl = app.demo?.match(/https?:\/\/[^\s—]+/)?.[0];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 lg:p-8 animate-in fade-in duration-300">
@@ -32,16 +33,6 @@ export const AppDetailModal: React.FC<AppDetailModalProps> = ({ app, onClose }) 
             </div>
           </div>
           <div className="w-full sm:w-auto flex flex-wrap items-center justify-start sm:justify-end gap-2 sm:gap-3">
-            {downloadUrl && (
-              <a
-                href={downloadUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="px-4 sm:px-5 py-1.5 bg-[#fa233b] text-white font-bold rounded-full text-sm hover:bg-[#d91e33] transition-colors"
-              >
-                Download
-              </a>
-            )}
             {githubUrl && (
               <a
                 href={githubUrl}
@@ -52,12 +43,32 @@ export const AppDetailModal: React.FC<AppDetailModalProps> = ({ app, onClose }) 
                 GitHub
               </a>
             )}
+            {downloadUrl && (
+              <a
+                href={downloadUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 sm:px-5 py-1.5 bg-[#fa233b] text-white font-bold rounded-full text-sm hover:bg-[#d91e33] transition-colors"
+              >
+                Download
+              </a>
+            )}
+            {demoUrl && (
+              <a
+                href={demoUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 sm:px-5 py-1.5 bg-[#fa233b] text-white font-bold rounded-full text-sm hover:bg-[#d91e33] transition-colors"
+              >
+                Demo
+              </a>
+            )}
             {projectUrl && (
               <a
                 href={projectUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="px-4 sm:px-5 py-1.5 bg-gray-100 text-blue-600 font-bold rounded-full text-sm hover:bg-gray-200 transition-colors"
+                className="px-4 sm:px-5 py-1.5 bg-[#fa233b] text-white font-bold rounded-full text-sm hover:bg-[#d91e33] transition-colors"
               >
                 Open
               </a>
