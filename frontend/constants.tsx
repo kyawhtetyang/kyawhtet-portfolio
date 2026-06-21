@@ -171,6 +171,22 @@ export const APPS: AppInfo[] = [
   },
   {
     id: '10.5',
+    name: 'VisionInspect AI',
+    subtitle: 'Computer vision inspection platform for recruiter-facing demos and inspection workflows.',
+    category: Category.Projects,
+    domain: 'AI/ML',
+    icon: imgGroup19,
+    banner: imgGroup19,
+    overview: 'A full-stack computer vision inspection platform with FastAPI, PostgreSQL, React, Docker, and a YOLO-style worker flow for upload, detection, annotation, and reporting.',
+    stack: 'Frontend: React + TypeScript\nBackend: FastAPI\nData: PostgreSQL\nInfra: Docker Compose\nFocus: upload, detect, annotate, report',
+    outcome: 'Built as a polished recruiter-facing AI project to show product thinking, deployment discipline, and end-to-end computer vision workflow design.',
+    developer: 'Kyaw Htet',
+    featured: true,
+    website: 'https://visioninspect.kyawhtet.com',
+    repo: 'https://github.com/kyawhtetyang/VisionInspect_AI'
+  },
+  {
+    id: '10.6',
     name: 'RAG Knowledge Assistant',
     subtitle: 'Production-style RAG assistant with retrieval, evaluation, and VPS deployment.',
     category: Category.Projects,
@@ -186,7 +202,7 @@ export const APPS: AppInfo[] = [
     repo: 'https://github.com/kyawhtetyang/RAG_Knowledge_Assistant'
   },
   {
-    id: '10.6',
+    id: '10.7',
     name: 'ResearchFlow AI',
     subtitle: 'Agentic research workflow platform with stored jobs, sources, reports, and live portfolio integration.',
     category: Category.Projects,

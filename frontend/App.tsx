@@ -25,6 +25,12 @@ import {
 
 type BlogCategory = 'All';
 type LibraryCategory = 'all' | string;
+type RouteState = {
+  category: Category;
+  projectFilter?: ProjectFilter;
+  blogCategory?: BlogCategory;
+  libraryCategory?: LibraryCategory;
+};
 
 const LIBRARY_MODULES = import.meta.glob('./docs/photo/*.jpg', { eager: true, import: 'default' }) as Record<string, string>;
 const CATEGORY_PATHS: Record<Category, string> = {
@@ -45,6 +51,56 @@ const PATH_TO_CATEGORY: Record<string, Category> = {
   '/lib': Category.Library,
   '/ask': Category.Ask,
   '/settings': Category.Settings,
+};
+
+const slugifyFilter = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+const projectFilterFromSlug = (slug?: string): ProjectFilter | undefined => {
+  if (!slug) return undefined;
+  if (slug === 'all') return 'All';
+  if (slug === 'featured') return 'Featured';
+  const match = PROJECT_FILTERS.find((filter) => slugifyFilter(filter) === slug);
+  return match;
+};
+
+const libraryCategoryFromSlug = (slug?: string): LibraryCategory | undefined => {
+  if (!slug) return undefined;
+  if (slug === 'all') return 'all';
+  return slug;
+};
+
+const blogCategoryFromSlug = (slug?: string): BlogCategory | undefined => {
+  if (!slug) return undefined;
+  if (slug === 'all') return 'All';
+  return 'All';
+};
+
+const parseRouteState = (pathname: string): RouteState => {
+  const parts = pathname.split('/').filter(Boolean);
+  const top = `/${parts[0] ?? ''}`;
+  const category = PATH_TO_CATEGORY[top] ?? Category.Home;
+  return {
+    category,
+    projectFilter: category === Category.Projects ? projectFilterFromSlug(parts[1]) ?? 'Featured' : undefined,
+    blogCategory: category === Category.Blog ? blogCategoryFromSlug(parts[1]) ?? 'All' : undefined,
+    libraryCategory: category === Category.Library ? libraryCategoryFromSlug(parts[1]) ?? 'all' : undefined,
+  };
+};
+
+const buildRoutePath = (state: RouteState): string => {
+  if (state.category === Category.Projects) {
+    const filterSlug = state.projectFilter && state.projectFilter !== 'Featured' ? slugifyFilter(state.projectFilter) : '';
+    return filterSlug ? `/projects/${filterSlug}` : '/projects';
+  }
+  if (state.category === Category.Blog) {
+    const slug = state.blogCategory && state.blogCategory !== 'All' ? slugifyFilter(state.blogCategory) : '';
+    return slug ? `/blog/${slug}` : '/blog';
+  }
+  if (state.category === Category.Library) {
+    const slug = state.libraryCategory && state.libraryCategory !== 'all' ? String(state.libraryCategory) : '';
+    return slug ? `/library/${slug}` : '/library';
+  }
+  return CATEGORY_PATHS[state.category] ?? '/';
 };
 
 const SidebarItem: React.FC<{ 
@@ -87,12 +143,21 @@ const App: React.FC = () => {
   const [userSettings, setUserSettings] = useState<UserSettings>(readUserSettings);
   const [selectedCategory, setSelectedCategory] = useState<Category>(() => {
     if (typeof window === 'undefined') return getInitialCategory();
-    return PATH_TO_CATEGORY[window.location.pathname] ?? getInitialCategory();
+    return parseRouteState(window.location.pathname).category ?? getInitialCategory();
   });
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedProjectFilter, setSelectedProjectFilter] = useState<ProjectFilter>('Featured');
-  const [selectedBlogCategory, setSelectedBlogCategory] = useState<BlogCategory>('All');
-  const [selectedLibraryCategory, setSelectedLibraryCategory] = useState<LibraryCategory>('all');
+  const [selectedProjectFilter, setSelectedProjectFilter] = useState<ProjectFilter>(() => {
+    if (typeof window === 'undefined') return 'Featured';
+    return parseRouteState(window.location.pathname).projectFilter ?? 'Featured';
+  });
+  const [selectedBlogCategory, setSelectedBlogCategory] = useState<BlogCategory>(() => {
+    if (typeof window === 'undefined') return 'All';
+    return parseRouteState(window.location.pathname).blogCategory ?? 'All';
+  });
+  const [selectedLibraryCategory, setSelectedLibraryCategory] = useState<LibraryCategory>(() => {
+    if (typeof window === 'undefined') return 'all';
+    return parseRouteState(window.location.pathname).libraryCategory ?? 'all';
+  });
   const [selectedApp, setSelectedApp] = useState<AppInfo | null>(null);
   const [selectedBlogDraft, setSelectedBlogDraft] = useState<BlogDraft | null>(null);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -247,6 +312,11 @@ const App: React.FC = () => {
 
   const featuredWork = [
     {
+      title: 'VisionInspect AI',
+      summary: 'Recruiter-facing computer vision inspection platform with upload, detect, annotate, and report flow built for a polished public demo.',
+      stack: 'React · FastAPI · PostgreSQL · Docker'
+    },
+    {
       title: 'CloudLanguage (MVP)',
       summary: 'Mobile-first language learning product for Burmese learners with lesson flow, progress tracking, review loops, and live VPS deployment.',
       stack: 'React · TypeScript · FastAPI · Lesson JSON'
@@ -299,15 +369,18 @@ const App: React.FC = () => {
     setSelectedApp(app);
   };
 
-  const navigateToCategory = (category: Category) => {
+  const navigateToRoute = (state: RouteState) => {
     if (typeof window !== 'undefined') {
-      const targetPath = CATEGORY_PATHS[category];
+      const targetPath = buildRoutePath(state);
       if (window.location.pathname !== targetPath) {
         window.history.pushState({}, '', targetPath);
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    setSelectedCategory(category);
+    setSelectedCategory(state.category);
+    if (state.projectFilter) setSelectedProjectFilter(state.projectFilter);
+    if (state.blogCategory) setSelectedBlogCategory(state.blogCategory);
+    if (state.libraryCategory) setSelectedLibraryCategory(state.libraryCategory);
   };
 
   useEffect(() => {
@@ -321,8 +394,11 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const onPopState = () => {
-      const category = PATH_TO_CATEGORY[window.location.pathname] ?? Category.Home;
-      setSelectedCategory(category);
+      const routeState = parseRouteState(window.location.pathname);
+      setSelectedCategory(routeState.category);
+      setSelectedProjectFilter(routeState.projectFilter ?? 'Featured');
+      setSelectedBlogCategory(routeState.blogCategory ?? 'All');
+      setSelectedLibraryCategory(routeState.libraryCategory ?? 'all');
       window.scrollTo({ top: 0, behavior: 'auto' });
     };
 
@@ -463,7 +539,7 @@ const App: React.FC = () => {
                     key={item.category}
                     category={item.category}
                     active={selectedCategory === item.category}
-                    onClick={navigateToCategory}
+                    onClick={(category) => navigateToRoute({ category })}
                     badge={item.badge}
                     compact={compactSidebar}
                     icon={item.renderIcon('w-5 h-5')}
@@ -657,7 +733,7 @@ const App: React.FC = () => {
                     <button
                       key={category.key}
                       type="button"
-                      onClick={() => setSelectedLibraryCategory(category.key)}
+                      onClick={() => navigateToRoute({ category: Category.Library, libraryCategory: category.key })}
                       className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
                         selectedLibraryCategory === category.key
                           ? 'bg-[#fa233b] text-white'
@@ -703,7 +779,7 @@ const App: React.FC = () => {
                 <div className="flex flex-wrap gap-2">
                   <button
                     type="button"
-                    onClick={() => setSelectedBlogCategory('All')}
+                    onClick={() => navigateToRoute({ category: Category.Blog, blogCategory: 'All' })}
                     className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
                       selectedBlogCategory === 'All'
                         ? 'bg-[#fa233b] text-white'
@@ -764,7 +840,7 @@ const App: React.FC = () => {
                     <button
                       key={filter}
                       type="button"
-                      onClick={() => setSelectedProjectFilter(filter)}
+                      onClick={() => navigateToRoute({ category: Category.Projects, projectFilter: filter })}
                       className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition-colors ${
                         selectedProjectFilter === filter
                           ? 'bg-[#fa233b] text-white'
