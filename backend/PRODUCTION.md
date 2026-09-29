@@ -8,7 +8,7 @@
 - Development reload mode is disabled.
 - Production dependencies are reproducible and reviewed.
 - Public AI traffic is rate-limited at the production edge.
-- Request/error logging is available without logging secrets.
+- Request/error logging is emitted to the platform log stream without query strings, bodies, headers, provider keys, or exception messages.
 - Provider failures have a safe fallback.
 - `/health` is monitored.
 - Deployment uses the production Docker contract rather than the development Compose file.
