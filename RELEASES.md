@@ -1,26 +1,25 @@
-# Releases
+# Release Process
 
-## 0.1.1 - Recruiter Featured Projects
+## Versioning
 
-Status: in preparation
+Use Semantic Versioning (`MAJOR.MINOR.PATCH`) for portfolio releases.
 
-Scope:
-- Refine recruiter-facing featured project presentation.
-- Normalize release version truth across the runtime.
-- Restore release, production, and verification documentation expected by the Personal OS project record.
-- Add backend test coverage and CI release gates.
+- `PATCH` → fixes, copy/content corrections, and non-breaking polish
+- `MINOR` → backward-compatible features or meaningful product improvements
+- `MAJOR` → breaking API, architecture, or deployment-contract changes
 
-Release gates:
-- Frontend: `npm run check`
-- Backend: `pip install -r requirements-dev.txt && pytest -q`
-- Production review: `backend/PRODUCTION.md`
-- Deployment verification: public frontend and backend `/health`
+## Release checklist
 
-## 0.1.0 - Portfolio Ask Hardening
+1. Work on a feature/fix branch.
+2. Run frontend `npm run check`.
+3. Run backend `pytest -q`.
+4. Review environment and security changes.
+5. Open a pull request into `main`.
+6. Merge only after CI passes.
+7. Update the application/package version when releasing.
+8. Tag the exact release commit as `vX.Y.Z`.
+9. Verify the deployed application and `/health` endpoint.
 
-Status: historical baseline
+## Current target
 
-Scope:
-- Establish the public full-stack portfolio runtime.
-- Add the Ask experience with local source-doc retrieval and provider fallback.
-- Document production responsibilities for the public portfolio.
+The current release candidate is `v0.1.1`, focused on recruiter-facing project presentation, release metadata consistency, and verified production/runtime contracts.

@@ -1,38 +1,36 @@
-# Production
+# Production Readiness
 
-This backend powers the public Kyaw Htet portfolio Ask experience.
+## Required before public exposure
 
-## Required Environment
+- Provider API keys are stored only in server-side environment/secrets.
+- No private LLM provider key is shipped to the browser.
+- `CORS_ORIGINS` contains only deployed frontend origins when the backend is exposed directly.
+- Development reload mode is disabled.
+- Production dependencies are reproducible and reviewed.
+- Public AI traffic is rate-limited at the production edge.
+- Request/error logging is available without logging secrets.
+- Provider failures have a safe fallback.
+- `/health` is monitored.
+- Deployment uses the production Docker contract rather than the development Compose file.
 
-- `GEMINI_API_KEY` must stay server-side.
-- `OPENAI_COMPATIBLE_API_KEY` must stay server-side when fallback is enabled.
-- `CORS_ORIGINS` must be set to the production frontend origin, for example `https://kyawhtet.com`.
-- `CORS_ORIGIN_REGEX` should not allow arbitrary public origins.
-- `MODEL_PROVIDER` should be set explicitly in production.
+## Production container contract
 
-## Runtime Requirements
+Use `docker-compose.production.yml` for the reference single-host deployment:
 
-- Serve with `uvicorn app.main:app --host 0.0.0.0 --port 8000` or the platform equivalent.
-- Expose `GET /health` for deployment and uptime checks.
-- Do not use `--reload` in production.
-- Keep provider keys out of frontend environment files and browser bundles.
-- Restrict CORS to the deployed frontend domain.
-
-## Release Verification
-
-Before a production deploy:
-
-```bash
-pip install -r requirements-dev.txt
-pytest -q
+```text
+Internet
+   ↓
+Nginx frontend container
+   ├── static SPA
+   └── /api/* → backend:8000
+                 ↓
+              LLM provider
 ```
 
-After deployment:
+The Nginx edge applies a baseline limit of 10 API requests/minute per client IP with a burst of 5. This is a baseline protection for the reference deployment, not a substitute for a managed WAF/API gateway at larger scale.
 
-```bash
-curl -fsS https://<backend-host>/health
-```
+The frontend production image is built with `npm ci` and `npm run build`, then served by Nginx. The backend image runs Uvicorn without development reload. The backend health check is used by Compose before starting the frontend dependency.
 
-## Known Follow-Up
+## Development vs production
 
-The current backend does not yet include persistent request logging or rate limiting middleware. Add those before treating this as a hardened production API.
+`docker-compose.yml` is a development environment. It mounts source directories and runs the Vite development server; it is not the production deployment contract.
