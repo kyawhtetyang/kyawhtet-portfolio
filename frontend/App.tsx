@@ -1,7 +1,12 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Category, AppInfo } from './domain/app';
-import { PROJECT_FILTERS, ProjectFilter, getProjectFilterType } from './domain/projectFilters';
+import {
+  PROJECT_FILTERS,
+  ProjectFilter,
+  compareFeaturedProjects,
+  getProjectFilterType,
+} from './domain/projectFilters';
 import { APPS } from './content/projects/apps';
 import { appConfig } from './config';
 import { AppCard } from './components/AppCard';
@@ -312,11 +317,13 @@ const App: React.FC = () => {
 
   const featuredWork = useMemo(
     () =>
-      APPS.filter((app) => app.featured).map((app) => ({
-        title: app.name,
-        summary: app.overview,
-        stack: app.stack.replace(/\n/g, ' · '),
-      })),
+      APPS.filter((app) => app.featured)
+        .sort(compareFeaturedProjects)
+        .map((app) => ({
+          title: app.name,
+          summary: app.overview,
+          stack: app.stack.replace(/\n/g, ' · '),
+        })),
     []
   );
 
@@ -336,7 +343,7 @@ const App: React.FC = () => {
 
     if (isProjectsPage && selectedProjectFilter !== 'All') {
       if (selectedProjectFilter === 'Featured') {
-        list = list.filter(app => app.featured);
+        list = list.filter(app => app.featured).sort(compareFeaturedProjects);
       } else {
         list = list.filter(app => getProjectFilterType(app) === selectedProjectFilter);
       }

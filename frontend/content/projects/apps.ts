@@ -19,7 +19,6 @@ export const APPS: AppInfo[] = [
     stack: 'Frontend: React + TypeScript\nBuild: Vite\nQuality: ESLint + Vitest\nDeploy: Vercel',
     outcome: 'Created a recruiter-friendly project catalogue with featured highlights and one-click access to demos and source code.',
     developer: 'Kyaw Htet',
-    featured: true,
     website: 'https://kyawhtet.com',
     repo: 'https://github.com/kyawhtetyang/AI-ML-Portfolio'
   },
