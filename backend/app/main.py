@@ -5,8 +5,10 @@ from app.api.ask import router as ask_router
 from app.api.chat import router as chat_router
 from app.api.health import router as health_router
 from app.config import settings
+from app.request_logging import log_request
 
 app = FastAPI(title=settings.app_name, version=settings.app_version)
+app.middleware("http")(log_request)
 
 app.add_middleware(
     CORSMiddleware,
