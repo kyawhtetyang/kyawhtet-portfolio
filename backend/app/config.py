@@ -34,7 +34,7 @@ _load_env_file(ENV_FILE)
 @dataclass(frozen=True)
 class Settings:
     app_name: str = "Kyaw Htet Portfolio Backend"
-    app_version: str = "0.1.0"
+    app_version: str = "0.1.1"
     model_provider: str = os.getenv("MODEL_PROVIDER", "gemini")
     gemini_model: str = os.getenv("GEMINI_MODEL", "gemini-3.5-flash")
     gemini_api_key: str = os.getenv("GEMINI_API_KEY", "")
