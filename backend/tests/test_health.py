@@ -13,7 +13,7 @@ def test_root_reports_application_status() -> None:
     body = response.json()
     assert body["status"] == "ok"
     assert body["app"]
-    assert body["version"]
+    assert body["version"] == "0.1.1"
 
 
 def test_health_endpoint_is_available() -> None:

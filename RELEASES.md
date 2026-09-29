@@ -22,4 +22,4 @@ Use Semantic Versioning (`MAJOR.MINOR.PATCH`) for portfolio releases.
 
 ## Current target
 
-The current hardening branch targets `v0.1.0`: the first explicitly versioned release after the initial portfolio prototype.
+The current release candidate is `v0.1.1`, focused on recruiter-facing project presentation, release metadata consistency, and verified production/runtime contracts.
