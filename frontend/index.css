@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --brand-accent: #fa233b;
   --text-primary: #1d1d1f;
